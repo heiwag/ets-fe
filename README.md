@@ -1,7 +1,5 @@
 # ets-fe
 
-> A React project
-
 ## Usage
 
 ```bash
