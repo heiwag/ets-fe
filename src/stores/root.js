@@ -2,6 +2,7 @@ import Login from './login'
 import Portal from './portal'
 import BatchList from './batchList'
 import TrackDetail from './trackDetail'
+import TrackList from './trackList'
 
 class RootStore {
   constructor () {
@@ -12,7 +13,8 @@ class RootStore {
       loginStore: new Login(this),
       portalStore: new Portal(this),
       batchListStore: new BatchList(this),
-      trackDetailStore: new TrackDetail(this)
+      trackDetailStore: new TrackDetail(this),
+      trackList: new TrackList(this)
     }
   }
 }
