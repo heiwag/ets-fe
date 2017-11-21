@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx'
+import { observable, action, runInAction } from 'mobx'
 import _ from 'lodash'
 import { _uuid } from '../utils/uuid'
 import axios from 'axios'
@@ -9,6 +9,15 @@ class TrackDetail {
   @observable pointId = 0
   @observable pointProps = []
   @observable isEditor = true
+  @observable formData = {
+    channel: '1',
+    eventkey: '',
+    eventcategory: '',
+    desc: '',
+    version: 1,
+    hascommon: true
+  }
+  @observable loading = false
 
   constructor (rootStore) {
     this.rootStore = rootStore
@@ -115,15 +124,83 @@ class TrackDetail {
     let newModel = formData
     const token = this.rootStore.stores.loginStore.token
     newModel.rawjsonschema = JSON.stringify(this.pointProps.slice())
-    const req = await axios.post(
+    const res = await axios.post(
       `${domain.apiDomain}/pointPool/addNewPoint`,
       newModel,
       { headers: { Authorization: token } })
-    if (!req.err) {
-      return true
-    } else {
-      return false
+    return !res.data.err
+  }
+
+  @action
+  async getPointById (pointId) {
+    this.loading = true
+    const token = this.rootStore.stores.loginStore.token
+    const res = await axios.get(
+      `${domain.apiDomain}/pointPool/point?pointId=${pointId}`,
+      { headers: { Authorization: token } }
+    )
+    runInAction(() => {
+      this.formData = res.data.data
+      this.pointProps = res.data.data.rawjsonschema || []
+      this.loading = false
+    })
+    return !res.data.err
+  }
+
+  @action
+  async resetForm () {
+    this.formData = {
+      channel: '1',
+      eventkey: '',
+      eventcategory: '',
+      desc: '',
+      version: 1,
+      hascommon: true
     }
+    this.pointProps = []
+  }
+
+  @action
+  async deletePoint (pointId) {
+    this.loading = true
+    const token = this.rootStore.stores.loginStore.token
+    const res = await axios.delete(
+      `${domain.apiDomain}/pointPool/point?pointId=${pointId}`,
+      { headers: { Authorization: token } }
+    )
+    runInAction(() => {
+      this.loading = false
+    })
+    return !res.data.err
+  }
+
+  @action
+  async updataPoint (formData) {
+    this.loading = true
+    const token = this.rootStore.stores.loginStore.token
+    let pointModel = formData
+    pointModel.rawjsonschema = JSON.stringify(this.pointProps.slice())
+    const res = await axios.post(
+      `${domain.apiDomain}/pointPool/updata`,
+      pointModel,
+      { headers: { Authorization: token } }
+    )
+    runInAction(() => {
+      this.loading = false
+    })
+    return !res.data.err
+  }
+
+  @action
+  async addNewVersion (formData) {
+    let newModel = formData
+    const token = this.rootStore.stores.loginStore.token
+    newModel.rawjsonschema = JSON.stringify(this.pointProps.slice())
+    const res = await axios.post(
+      `${domain.apiDomain}/pointPool/newVersion`,
+      newModel,
+      { headers: { Authorization: token } })
+    return !res.data.err
   }
 }
 

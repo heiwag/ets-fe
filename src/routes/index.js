@@ -37,7 +37,7 @@ export default [
         component: PointTrackView,
         exact: true
       },
-      { path: '/home/point-track/:action/:batchId',
+      { path: '/home/point-track/:action/:pointId',
         component: PointTrackDetailView
       },
       { path: '/home/point-test',

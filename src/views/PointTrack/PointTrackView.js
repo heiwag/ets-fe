@@ -114,6 +114,15 @@ class PointTrackView extends Component {
             : <Badge status="warning" text="停止使用" />
         )
       },
+      { title: '是否包含公共埋点',
+        dataIndex: 'hascommon',
+        key: 'hascommon',
+        render: (text) => (
+          (text === 1)
+            ? <Tag color="blue">有</Tag>
+            : <Tag color="green">无</Tag>
+        )
+      },
       { title: '最后更新时间',
         dataIndex: 'updatetime',
         key: 'updatetime',
@@ -125,7 +134,7 @@ class PointTrackView extends Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <Link to={{ pathname: `/home/batch/detail/${record.batchid}` }}>Detaile</Link>
+            <Link to={{ pathname: `/home/point-track/detail/${record.pointid}` }}>Detaile</Link>
           </span>
         )
       }
