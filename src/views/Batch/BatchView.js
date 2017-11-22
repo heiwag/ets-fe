@@ -90,6 +90,10 @@ class BatchView extends Component {
     this.props.history.push({ pathname: `/home/batch/detaile/${batchid}` })
   }
 
+  handlerNew = () => {
+    this.props.history.push({ pathname: `/home/batch/new/0` })
+  }
+
   render () {
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -228,7 +232,7 @@ class BatchView extends Component {
         </Form>
         <Row className="batch-table-operator">
           <Col span={6}>
-            <Button type="primary" icon="plus" size="large">新建</Button>
+            <Button type="primary" icon="plus" size="large" onClick={this.handlerNew}>新建</Button>
           </Col>
         </Row>
         <Table

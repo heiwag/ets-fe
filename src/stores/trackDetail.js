@@ -3,6 +3,7 @@ import _ from 'lodash'
 import { _uuid } from '../utils/uuid'
 import axios from 'axios'
 import domain from '../utils/domain'
+import { getJsonSchema } from '../utils/jsonSchema'
 
 class TrackDetail {
   @observable action = 'new'
@@ -46,7 +47,7 @@ class TrackDetail {
       this.pointProps.push({
         uid: _uuid(),
         propName: '',
-        propType: 'String',
+        propType: 'string',
         isRequire: false,
         desc: ''
       })
@@ -73,7 +74,7 @@ class TrackDetail {
       _.set(propArray, [targetIndex, 'enum'], [{
         uid: _uuid(),
         value: '',
-        type: 'String',
+        type: 'string',
         desc: ''
       }])
     } else if (key === 'propType' && value !== 'enum') {
@@ -102,7 +103,7 @@ class TrackDetail {
       enums.push({
         uid: _uuid(),
         value: '',
-        type: 'String',
+        type: 'string',
         desc: ''
       })
       return enums.slice()
@@ -124,6 +125,7 @@ class TrackDetail {
     let newModel = formData
     const token = this.rootStore.stores.loginStore.token
     newModel.rawjsonschema = JSON.stringify(this.pointProps.slice())
+    newModel.jsonschema = getJsonSchema(formData.hascommon, this.pointProps.slice())
     const res = await axios.post(
       `${domain.apiDomain}/pointPool/addNewPoint`,
       newModel,
@@ -180,6 +182,7 @@ class TrackDetail {
     const token = this.rootStore.stores.loginStore.token
     let pointModel = formData
     pointModel.rawjsonschema = JSON.stringify(this.pointProps.slice())
+    pointModel.jsonschema = getJsonSchema(formData.hascommon, this.pointProps.slice())
     const res = await axios.post(
       `${domain.apiDomain}/pointPool/updata`,
       pointModel,
@@ -196,6 +199,7 @@ class TrackDetail {
     let newModel = formData
     const token = this.rootStore.stores.loginStore.token
     newModel.rawjsonschema = JSON.stringify(this.pointProps.slice())
+    newModel.jsonschema = getJsonSchema(formData.hascommon, this.pointProps.slice())
     const res = await axios.post(
       `${domain.apiDomain}/pointPool/newVersion`,
       newModel,

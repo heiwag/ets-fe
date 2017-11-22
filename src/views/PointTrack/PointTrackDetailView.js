@@ -63,37 +63,49 @@ class PointTrackDetailView extends Component {
       if (err) return
       const formData = this.props.form.getFieldsValue()
       if (this.isNew) {
-        this.props.trackDetailStore.submit(formData).then(res => {
-          if (res) {
-            this.props.history.replace({ pathname: '/home/point-track/new/0' })
-            message.success('保存成功！', 3)
-          } else {
-            message.error('保存失败！', 3)
-          }
-        })
+        this.props.trackDetailStore.submit(formData)
+          .then(res => {
+            if (res) {
+              this.props.history.replace({ pathname: '/home/point-track/new/0' })
+              message.success('保存成功！', 3)
+            } else {
+              message.error('保存失败！', 3)
+            }
+          })
+          .catch(err => {
+            message.error(err.response.data.msg, 3)
+          })
       } else if (this.action === 'detail') {
-        this.props.trackDetailStore.addNewVersion(formData).then(res => {
-          if (res) {
-            this.props.history.replace({ pathname: '/home/point-track' })
-            message.success('创建新版本成功', 3)
-          } else {
-            message.error('船舰新版本失败', 3)
-          }
-        })
+        this.props.trackDetailStore.addNewVersion(formData)
+          .then(res => {
+            if (res) {
+              this.props.history.replace({ pathname: '/home/point-track' })
+              message.success('创建新版本成功', 3)
+            } else {
+              message.error('船舰新版本失败', 3)
+            }
+          })
+          .catch(err => {
+            message.error(err.response.data.msg, 3)
+          })
       }
     })
   }
 
   handlerDeletePoint = (pointId) => {
-    this.props.trackDetailStore.deletePoint(pointId).then(res => {
-      if (res) {
-        message.success('删除成功!', 2, () => {
-          this.props.history.replace({ pathname: '/home/point-track' })
-        })
-      } else {
-        message.error('删除失败！', 3)
-      }
-    })
+    this.props.trackDetailStore.deletePoint(pointId)
+      .then(res => {
+        if (res) {
+          message.success('删除成功!', 2, () => {
+            this.props.history.replace({ pathname: '/home/point-track' })
+          })
+        } else {
+          message.error('删除失败！', 3)
+        }
+      })
+      .catch(err => {
+        message.error(err.response.data.msg, 3)
+      })
   }
 
   handlerUpdataPoint = () => {
@@ -108,13 +120,17 @@ class PointTrackDetailView extends Component {
           if (err) return
           let formData = this.props.form.getFieldsValue()
           formData.pointid = this.pointId
-          this.props.trackDetailStore.updataPoint(formData).then(res => {
-            if (res) {
-              message.success('更新成功!', 3)
-            } else {
-              message.error('更新失败!', 3)
-            }
-          })
+          this.props.trackDetailStore.updataPoint(formData)
+            .then(res => {
+              if (res) {
+                message.success('更新成功!', 3)
+              } else {
+                message.error('更新失败!', 3)
+              }
+            })
+            .catch(err => {
+              message.error(err.response.data.msg, 3)
+            })
         })
       }
     })
@@ -158,8 +174,9 @@ class PointTrackDetailView extends Component {
         <Select defaultValue={text} onChange={(value) => this.handlerTableChange(record, value, key)}>
           <Option value="string">String</Option>
           <Option value="number">Number</Option>
+          <Option value="integer">Integer</Option>
           <Option value="enum">Enum</Option>
-          <Option value="bool">Boolean</Option>
+          <Option value="boolean">Boolean</Option>
           <Option value="object">Object</Option>
         </Select>
       )
@@ -342,14 +359,14 @@ class PointTrackDetailView extends Component {
         <Spin spinning={this.props.loading}>
           <Row>
             <Col span={24}>
-              <Card title="基础信息设置" bordered noHovering={false}>
+              <Card title="基础信息设置" bordered noHovering>
                 <Form layout="horizontal">
                   <FormItem
                     label="埋点平台"
                     {...formItemLayout}
                   >
                     {getFieldDecorator('channel', { initialValue: channel.toString() })(
-                      <Radio.Group onChange={this.handleFormLayoutChange}>
+                      <Radio.Group>
                         <Radio.Button value="1">Mobile</Radio.Button>
                         <Radio.Button value="2">PC</Radio.Button>
                       </Radio.Group>
@@ -413,7 +430,7 @@ class PointTrackDetailView extends Component {
           </Row>
           <Row style={{ marginTop: 24 }}>
             <Col span={24}>
-              <Card title="埋点数据设置" bordered noHovering={false}>
+              <Card title="埋点数据设置" bordered noHovering>
                 <Row gutter={80}>
                   <Col span={2}>
                     <Button type="primary" icon="plus" onClick={this.handleAddProp}>属性</Button>
