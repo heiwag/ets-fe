@@ -10,13 +10,16 @@ class TrackDetail {
   @observable pointId = 0
   @observable pointProps = []
   @observable isEditor = true
+  @observable batchList = []
   @observable formData = {
     channel: '1',
     eventkey: '',
     eventcategory: '',
     desc: '',
     version: 1,
-    hascommon: true
+    hascommon: true,
+    business_line: '',
+    batch_id: ''
   }
   @observable loading = false
 
@@ -126,6 +129,7 @@ class TrackDetail {
     const token = this.rootStore.stores.loginStore.token
     newModel.rawjsonschema = JSON.stringify(this.pointProps.slice())
     newModel.jsonschema = getJsonSchema(formData.hascommon, this.pointProps.slice())
+    delete newModel.batchName
     const res = await axios.post(
       `${domain.apiDomain}/pointPool/addNewPoint`,
       newModel,
@@ -157,7 +161,9 @@ class TrackDetail {
       eventcategory: '',
       desc: '',
       version: 1,
-      hascommon: true
+      hascommon: true,
+      business_line: '',
+      batch_id: ''
     }
     this.pointProps = []
   }
@@ -181,6 +187,7 @@ class TrackDetail {
     this.loading = true
     const token = this.rootStore.stores.loginStore.token
     let pointModel = formData
+    delete pointModel.batchName
     pointModel.rawjsonschema = JSON.stringify(this.pointProps.slice())
     pointModel.jsonschema = getJsonSchema(formData.hascommon, this.pointProps.slice())
     const res = await axios.post(
@@ -198,12 +205,29 @@ class TrackDetail {
   async addNewVersion (formData) {
     let newModel = formData
     const token = this.rootStore.stores.loginStore.token
+    delete newModel.batchName
     newModel.rawjsonschema = JSON.stringify(this.pointProps.slice())
     newModel.jsonschema = getJsonSchema(formData.hascommon, this.pointProps.slice())
     const res = await axios.post(
       `${domain.apiDomain}/pointPool/newVersion`,
       newModel,
       { headers: { Authorization: token } })
+    return !res.data.err
+  }
+
+  @action
+  async fetchBatchByChannelAndStatus (status = 0, channel = -1) {
+    const token = this.rootStore.stores.loginStore.token
+    const res = await axios.post(
+      `${domain.apiDomain}/batch/fetchBatch`,
+      { status, channel },
+      { headers: { Authorization: token } }
+    )
+
+    runInAction(() => {
+      this.batchList = res.data
+    })
+
     return !res.data.err
   }
 }

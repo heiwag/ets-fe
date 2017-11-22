@@ -108,11 +108,15 @@ class BatchView extends Component {
       title: '类型',
       dataIndex: 'channel',
       key: 'channel',
-      render: (text) => (
-        (text === 1)
-          ? <Tag color="blue">Mobile</Tag>
-          : <Tag color="green">PC</Tag>
-      )
+      render: (text) => {
+        if (text.toString() === '1') {
+          return <Tag color="blue">Mobile</Tag>
+        } else if (text.toString() === '2') {
+          return <Tag color="green">PC</Tag>
+        } else if (text.toString() === '3') {
+          return <Tag color="purple">H5</Tag>
+        }
+      }
     }, {
       title: '状态',
       dataIndex: 'status',
@@ -162,6 +166,7 @@ class BatchView extends Component {
                     <Option value="-1">全部</Option>
                     <Option value="1">Mobile</Option>
                     <Option value="2">PC</Option>
+                    <Option value="3">H5</Option>
                   </Select>
                 )}
               </FormItem>

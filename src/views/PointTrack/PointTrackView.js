@@ -10,6 +10,8 @@ import {
   Icon
 } from 'antd'
 
+import { businessLineTable } from '../../utils/stringTable'
+
 import './PointTrackView.scss'
 
 const FormItem = Form.Item
@@ -114,7 +116,7 @@ class PointTrackView extends Component {
             : <Badge status="warning" text="停止使用" />
         )
       },
-      { title: '是否包含公共埋点',
+      { title: '公共埋点',
         dataIndex: 'hascommon',
         key: 'hascommon',
         render: (text) => (
@@ -122,6 +124,16 @@ class PointTrackView extends Component {
             ? <Tag color="blue">有</Tag>
             : <Tag color="green">无</Tag>
         )
+      },
+      { title: '所属分线',
+        dataIndex: 'business_line',
+        key: 'business_line',
+        render: (text) => (businessLineTable[text])
+      },
+      { title: '批次名称',
+        dataIndex: 'batchName',
+        key: 'batchName',
+        render: (text) => <span>{text}</span>
       },
       { title: '最后更新时间',
         dataIndex: 'updatetime',

@@ -8,6 +8,8 @@ import {
   Popconfirm, Modal, Spin
 } from 'antd'
 
+import { channelTable } from '../../utils/stringTable'
+
 const FormItem = Form.Item
 const { TextArea } = Input
 const Option = Select.Option
@@ -22,7 +24,8 @@ class PointTrackDetailView extends Component {
     trackDetailStore: PropTypes.object,
     pointProps: PropTypes.array,
     isEditor: PropTypes.bool,
-    formData: PropTypes.object
+    formData: PropTypes.object,
+    batchList: PropTypes.object
   }
 
   constructor (props) {
@@ -31,6 +34,7 @@ class PointTrackDetailView extends Component {
     this.action = action
     this.isNew = action === 'new'
     this.pointId = pointId
+    this.props.trackDetailStore.fetchBatchByChannelAndStatus()
     if (!this.isNew) {
       this.props.trackDetailStore.getPointById(pointId)
     } else {
@@ -76,18 +80,27 @@ class PointTrackDetailView extends Component {
             message.error(err.response.data.msg, 3)
           })
       } else if (this.action === 'detail') {
-        this.props.trackDetailStore.addNewVersion(formData)
-          .then(res => {
-            if (res) {
-              this.props.history.replace({ pathname: '/home/point-track' })
-              message.success('创建新版本成功', 3)
-            } else {
-              message.error('船舰新版本失败', 3)
-            }
-          })
-          .catch(err => {
-            message.error(err.response.data.msg, 3)
-          })
+        confirm({
+          title: '警告',
+          content: '同一个埋点，同一时间只有一个版本会处于激活状态，新创建的版本会自动启动，之前的版本会自动进入未启动状态',
+          okText: '创建',
+          okType: 'danger',
+          cancelText: '取消',
+          onOk: () => {
+            this.props.trackDetailStore.addNewVersion(formData)
+              .then(res => {
+                if (res) {
+                  this.props.history.replace({ pathname: '/home/point-track' })
+                  message.success('创建新版本成功', 3)
+                } else {
+                  message.error('船舰新版本失败', 3)
+                }
+              })
+              .catch(err => {
+                message.error(err.response.data.msg, 3)
+              })
+          }
+        })
       }
     })
   }
@@ -349,7 +362,9 @@ class PointTrackDetailView extends Component {
       eventcategory,
       desc,
       version,
-      hascommon
+      hascommon,
+      business_line,
+      batch_id
     } = this.props.formData
 
     const isNew = this.isNew
@@ -370,6 +385,35 @@ class PointTrackDetailView extends Component {
                         <Radio.Button value="1">Mobile</Radio.Button>
                         <Radio.Button value="2">PC</Radio.Button>
                       </Radio.Group>
+                    )}
+                  </FormItem>
+                  <FormItem
+                    label="所属分线"
+                    {...formItemLayout}
+                  >
+                    {getFieldDecorator('business_line', {
+                      initialValue: business_line.toString()
+                    })(
+                      <Select>
+                        <Option value="1">引导体系线</Option>
+                        <Option value="2">专业能力线</Option>
+                        <Option value="3">情感能力线</Option>
+                        <Option value="4">产品运营线</Option>
+                      </Select>
+                    )}
+                  </FormItem>
+                  <FormItem
+                    label="所属批次"
+                    {...formItemLayout}
+                  >
+                    {getFieldDecorator('batch_id', { initialValue: batch_id })(
+                      <Select>
+                        {
+                          this.props.batchList.slice().map(item => (
+                            <Option key={item.batchid} value={item.batchid}>{`${channelTable[item.channel]} - ${item.name}`}</Option>
+                          ))
+                        }
+                      </Select>
                     )}
                   </FormItem>
                   <FormItem
@@ -466,7 +510,8 @@ export default inject(stores => ({
   isEditor: stores.trackDetailStore.isEditor,
   setEditorStatue: stores.trackDetailStore.setEditorStatue,
   formData: stores.trackDetailStore.formData,
-  loading: stores.trackDetailStore.loading
+  loading: stores.trackDetailStore.loading,
+  batchList: stores.trackDetailStore.batchList
 }))(
   observer(Form.create()(PointTrackDetailView))
 )
