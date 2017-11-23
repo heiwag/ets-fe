@@ -10,7 +10,7 @@ import {
   Icon
 } from 'antd'
 
-import { businessLineTable } from '../../utils/stringTable'
+import { channelTable, businessLineTable } from '../../utils/stringTable'
 
 import './PointTrackView.scss'
 
@@ -30,6 +30,7 @@ class PointTrackView extends Component {
     tableData: PropTypes.object,
     totalCount: PropTypes.number,
     pageSize: PropTypes.number,
+    batchList: PropTypes.object,
     loading: PropTypes.bool
   }
 
@@ -38,6 +39,7 @@ class PointTrackView extends Component {
     this.state = {
       expand: false
     }
+    this.props.trackList.fetchBatchByChannelAndStatus()
   }
 
   componentWillMount () {
@@ -57,8 +59,7 @@ class PointTrackView extends Component {
     this.props.history.push({ pathname: '/home/point-track/new/0' })
   }
 
-  handleSearch = (e) => {
-    e.preventDefault()
+  searchTable = (pageIndex = 1) => {
     this.props.form.validateFields((err, values) => {
       if (err) return
       if (!_.isEmpty(values.updatetime)) {
@@ -72,14 +73,25 @@ class PointTrackView extends Component {
       if (values.channel === '-1') {
         delete values.channel
       }
-      values.pageIndex = 1
+      if (values.business_line === '-1') {
+        delete values.business_line
+      }
+      if (values.batch_id === '-1') {
+        delete values.batch_id
+      }
+      values.pageIndex = pageIndex
       this.props.trackList.fetTableList(values)
     })
   }
 
+  handleSearch = (e) => {
+    e.preventDefault()
+    this.searchTable(1)
+  }
+
   hanlerTablePermeterChange = (pagination, filters, sorter) => {
     const { current } = pagination
-    this.props.trackList.fetTableList({pageIndex: current})
+    this.searchTable(current)
   }
 
   render () {
@@ -186,13 +198,42 @@ class PointTrackView extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
+              <FormItem {...formItemLayout} label="分线">
+                {getFieldDecorator('business_line')(
+                  <Select
+                    placeholder="请选择"
+                  >
+                    <Option value="-1">全部</Option>
+                    <Option value="1">引导体系线</Option>
+                    <Option value="2">专业能力线</Option>
+                    <Option value="3">情感能力线</Option>
+                    <Option value="4">产品运营线</Option>
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} label="批次">
+                {getFieldDecorator('batch_id')(
+                  <Select>
+                    <Option value="-1">全部</Option>
+                    {
+                      this.props.batchList.slice().map(item => (
+                        <Option key={item.batchid} value={item.batchid}>{`${channelTable[item.channel]} - ${item.name}`}</Option>
+                      ))
+                    }
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
               <FormItem {...formItemLayout} label="eventKey">
                 {getFieldDecorator('eventkey')(
                   <Input placeholder="请输入" />
                 )}
               </FormItem>
             </Col>
-            <Col span={8} style={{ display: this.state.expand ? 'block' : 'none' }}>
+            <Col span={8}>
               <FormItem {...formItemLayout} label="Category">
                 {getFieldDecorator('eventcategory')(
                   <Input placeholder="请输入" />
@@ -257,6 +298,7 @@ export default inject(
     tableData: stores.trackList.tableData,
     pageSize: stores.trackList.pageSize,
     totalCount: stores.trackList.totalCount,
-    loading: stores.trackList.loading
+    loading: stores.trackList.loading,
+    batchList: stores.trackList.batchList
   })
 )(observer(Form.create()(PointTrackView)))

@@ -7,6 +7,7 @@ class TrackList {
   @observable totalCount = 0
   @observable pageSize = 10
   @observable loading = true
+  @observable batchList = []
 
   constructor (rootStore) {
     this.rootStore = rootStore
@@ -33,6 +34,22 @@ class TrackList {
         this.loading = false
       })
     }
+  }
+
+  @action
+  async fetchBatchByChannelAndStatus (status = -1, channel = -1) {
+    const token = this.rootStore.stores.loginStore.token
+    const res = await axios.post(
+      `${domain.apiDomain}/batch/fetchBatch`,
+      { status, channel },
+      { headers: { Authorization: token } }
+    )
+
+    runInAction(() => {
+      this.batchList = res.data
+    })
+
+    return !res.data.err
   }
 }
 

@@ -380,7 +380,10 @@ class PointTrackDetailView extends Component {
                     label="埋点平台"
                     {...formItemLayout}
                   >
-                    {getFieldDecorator('channel', { initialValue: channel.toString() })(
+                    {getFieldDecorator('channel', {
+                      initialValue: channel.toString(),
+                      rules: [{ required: true, message: '请选择平台' }]
+                    })(
                       <Radio.Group>
                         <Radio.Button value="1">Mobile</Radio.Button>
                         <Radio.Button value="2">PC</Radio.Button>
@@ -392,7 +395,8 @@ class PointTrackDetailView extends Component {
                     {...formItemLayout}
                   >
                     {getFieldDecorator('business_line', {
-                      initialValue: business_line.toString()
+                      initialValue: business_line.toString(),
+                      rules: [{ required: true, message: '请选择分线!' }]
                     })(
                       <Select>
                         <Option value="1">引导体系线</Option>
@@ -406,7 +410,10 @@ class PointTrackDetailView extends Component {
                     label="所属批次"
                     {...formItemLayout}
                   >
-                    {getFieldDecorator('batch_id', { initialValue: batch_id })(
+                    {getFieldDecorator('batch_id', {
+                      initialValue: batch_id,
+                      rules: [{ required: true, message: '请选择批次' }]
+                    })(
                       <Select>
                         {
                           this.props.batchList.slice().map(item => (

@@ -4,6 +4,7 @@ import domain from '../utils/domain'
 
 class BatchList {
   @observable tableData = []
+  @observable batchList = []
   @observable totalCount = 0
   @observable pageSize = 10
   @observable loading = true
