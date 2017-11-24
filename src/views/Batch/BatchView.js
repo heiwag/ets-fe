@@ -43,12 +43,7 @@ class BatchView extends Component {
     this.setState({ expand: !expand })
   }
 
-  handleReset = () => {
-    this.props.form.resetFields()
-  }
-
-  handleSearch = (e) => {
-    e.preventDefault()
+  searchTable = (pageIndex) => {
     this.props.form.validateFields((err, values) => {
       if (err) return
       if (!_.isEmpty(values.createtime)) {
@@ -75,14 +70,23 @@ class BatchView extends Component {
       if (values.channel === '-1') {
         delete values.channel
       }
-      values.pageIndex = 1
+      values.pageIndex = pageIndex
       this.props.batchList.getTableData(values)
     })
   }
 
+  handleReset = () => {
+    this.props.form.resetFields()
+  }
+
+  handleSearch = (e) => {
+    e.preventDefault()
+    this.searchTable(1)
+  }
+
   hanlerTablePermeterChange = (pagination, filters, sorter) => {
     const { current } = pagination
-    this.props.batchList.getTableData({pageIndex: current})
+    this.searchTable(current)
   }
 
   handleDetail = (record) => {
