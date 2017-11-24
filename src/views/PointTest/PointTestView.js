@@ -1,10 +1,257 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+// import moment from 'moment'
+// import _ from 'lodash'
+import { observer, inject } from 'mobx-react'
+import {
+  Table, Form, Row, Col,
+  Button, Input, Select,
+  Tag
+} from 'antd'
 
-export default class PointTestView extends Component {
+import './PointTestVIew.scss'
+
+import { channelTable, businessLineTable } from '../../utils/stringTable'
+
+const FormItem = Form.Item
+const Option = Select.Option
+// const { RangePicker } = DatePicker
+
+class PointTestView extends Component {
+  static propTypes = {
+    form: PropTypes.object,
+    history: PropTypes.object,
+    testList: PropTypes.object,
+    tableData: PropTypes.object,
+    batchList: PropTypes.object,
+    totalCount: PropTypes.number,
+    pageSize: PropTypes.number,
+    loading: PropTypes.bool
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      expand: false
+    }
+    this.props.testList.fetchBatchByChannelAndStatus()
+  }
+
+  componentWillMount () {
+    this.props.testList.getTableData({ pageIndex: 1 })
+  }
+
+  toggle = () => {
+    const { expand } = this.state
+    this.setState({ expand: !expand })
+  }
+
+  searchTable = (pageIndex) => {
+    this.props.form.validateFields((err, values) => {
+      if (err) return
+
+      if (values.pass_status === '-1') {
+        delete values.pass_status
+      } else {
+        values.pass_status = !!values.pass_status
+      }
+
+      if (values.business_line === '-1') {
+        delete values.business_line
+      }
+
+      if (values.channel === '-1') {
+        delete values.channel
+      }
+
+      if (values.batch_id === '-1') {
+        delete values.batch_id
+      }
+
+      values.pageIndex = pageIndex
+      this.props.testList.getTableData(values)
+    })
+  }
+
+  handleReset = () => {
+    this.props.form.resetFields()
+  }
+
+  handleSearch = (e) => {
+    e.preventDefault()
+    this.searchTable(1)
+  }
+
+  hanlerTablePermeterChange = (pagination, filters, sorter) => {
+    const { current } = pagination
+    this.searchTable(current)
+  }
+
+  handleDetail = (record) => {
+    const { batchid } = record
+    this.props.history.push({ pathname: `/home/batch/detaile/${batchid}` })
+  }
+
   render () {
+    const formItemLayout = {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18 }
+    }
+    const { getFieldDecorator } = this.props.form
+    const columns = [{
+      title: 'eventKey',
+      dataIndex: 'eventkey',
+      key: 'eventkey'
+    }, { title: '是否通过',
+      dataIndex: 'pass_status',
+      key: 'pass_status',
+      render: (text, record) => {
+        console.log(typeof record.errorCount)
+        if (record.errorCount.toString() === '0') {
+          return <Tag color="green">通过</Tag>
+        } else {
+          return <Tag color="red">异常</Tag>
+        }
+      }
+    }, {
+      title: '错误比例',
+      dataIndex: 'totalCount',
+      key: 'totalCount',
+      render: (text, record) => {
+        const ratio = Math.floor((record.errorCount / record.totalCount) * 100)
+        let ratioColor
+        if (ratio === 0) ratioColor = 'green'
+        else ratioColor = 'red'
+        return (
+          <span>
+            <span><Tag color="blue">{`${record.errorCount}/${record.totalCount}`}</Tag></span>
+            <span><Tag color={ratioColor}>{`${ratio}%`}</Tag></span>
+          </span>
+        )
+      }
+    },
+    { title: '埋点类别',
+      dataIndex: 'channel',
+      key: 'chaanel',
+      render: (text) => {
+        if (text.toString() === '1') {
+          return <Tag color="blue">Mobile</Tag>
+        } else if (text.toString() === '2') {
+          return <Tag color="green">PC</Tag>
+        } else if (text.toString() === '3') {
+          return <Tag color="purple">H5</Tag>
+        }
+      }
+    }, { title: '所属分线',
+      dataIndex: 'business_line',
+      key: 'business_line',
+      render: (text) => (businessLineTable[text])
+    }, { title: '批次名称',
+      dataIndex: 'batchName',
+      key: 'batchName',
+      render: (text, record) => <span>{this.props.batchList.slice().filter(x => x.batchid === record.batch_id)[0].name}</span>
+    }, {
+      title: '操作',
+      key: 'action',
+      render: (text, record) => (
+        <span>
+          <Link to={{ pathname: `/home/batch/detail/${record.batchid}` }}>Detaile</Link>
+        </span>
+      )
+    }]
+
     return (
-      <h1>埋点测试</h1>
+      <div>
+        <Form
+          className="batch-search-form"
+          onSubmit={this.handleSearch}
+        >
+          <Row gutter={10}>
+            <Col span={8}>
+              <FormItem {...formItemLayout} label="批次">
+                {getFieldDecorator('batch_id', { initialValue: '-1' })(
+                  <Select>
+                    <Option value="-1">全部</Option>
+                    {
+                      this.props.batchList.slice().map(item => (
+                        <Option key={item.batchid} value={item.batchid}>{`${channelTable[item.channel]} - ${item.name}`}</Option>
+                      ))
+                    }
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} label="是否通过">
+                {getFieldDecorator('pass_status', { initialValue: '-1' })(
+                  <Select
+                    placeholder="请选择"
+                  >
+                    <Option value="-1">全部</Option>
+                    <Option value="1">正常</Option>
+                    <Option value="0">异常</Option>
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} label="分线">
+                {getFieldDecorator('business_line', { initialValue: '-1' })(
+                  <Select
+                    placeholder="请选择"
+                  >
+                    <Option value="-1">全部</Option>
+                    <Option value="1">引导体系线</Option>
+                    <Option value="2">专业能力线</Option>
+                    <Option value="3">情感能力线</Option>
+                    <Option value="4">产品运营线</Option>
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} label="埋点eventKey">
+                {getFieldDecorator('eventkey')(
+                  <Input placeholder="请输入" />
+                )}
+              </FormItem>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={24} style={{ textAlign: 'right' }}>
+              <Button type="primary" htmlType="submit">Search</Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
+                Clear
+              </Button>
+              {/* <a style={{ marginLeft: 8, fontSize: 12 }} onClick={this.toggle}>
+                Collapse <Icon type={this.state.expand ? 'up' : 'down'} />
+              </a> */}
+            </Col>
+          </Row>
+        </Form>
+        <Table
+          className="test-table"
+          columns={columns}
+          dataSource={this.props.tableData.slice()}
+          rowKey="pointid"
+          expandedRowRender={(record) => <p>{record.desc}</p>}
+          pagination={{ pageSize: this.props.pageSize, total: this.props.totalCount }}
+          onChange={this.hanlerTablePermeterChange}
+          loading={this.props.loading}
+        />
+      </div>
     )
   }
 }
+
+export default inject(
+  stores => ({
+    testList: stores.testListStore,
+    tableData: stores.testListStore.tableData,
+    totalCount: stores.testListStore.totalCount,
+    pageSize: stores.testListStore.pageSize,
+    loading: stores.testListStore.loading,
+    batchList: stores.testListStore.batchList
+  })
+)(observer(Form.create()(PointTestView)))

@@ -113,11 +113,15 @@ class PointTrackView extends Component {
       { title: '埋点类别',
         dataIndex: 'channel',
         key: 'chaanel',
-        render: (text) => (
-          (text === 1)
-            ? <Tag color="blue">Mobile</Tag>
-            : <Tag color="green">PC</Tag>
-        )
+        render: (text) => {
+          if (text.toString() === '1') {
+            return <Tag color="blue">Mobile</Tag>
+          } else if (text.toString() === '2') {
+            return <Tag color="green">PC</Tag>
+          } else if (text.toString() === '3') {
+            return <Tag color="purple">H5</Tag>
+          }
+        }
       },
       { title: '埋点状态',
         dataIndex: 'status',
