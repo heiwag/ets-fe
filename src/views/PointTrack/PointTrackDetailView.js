@@ -63,6 +63,7 @@ class PointTrackDetailView extends Component {
   }
 
   handlerSubmitPoint = () => {
+    console.log('props:', this.props.pointProps)
     this.props.form.validateFieldsAndScroll((err) => {
       if (err) return
       const formData = this.props.form.getFieldsValue()

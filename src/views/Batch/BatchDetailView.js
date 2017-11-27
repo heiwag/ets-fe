@@ -203,14 +203,16 @@ class BatchDetailView extends Component {
                         initialValue: name,
                         rules: [{ required: true, message: '请填写批次名称' }]
                       })(
-                        this.props.formData.status === 0 ? <Input placeholder="请输入" /> : <span>{name}</span>
+                        status === 0 ? <Input placeholder="请输入" /> : <span>{name}</span>
                       )}
                     </FormItem>
                     {isNew ? null : <FormItem
                       label="批次状态"
                       {...formItemLayout}
                     >
-                      {getFieldDecorator('status', { initialValue: status })(
+                      {getFieldDecorator('status', {
+                        initialValue: status
+                      })(
                         status === 0 ? <Tag color="blue">未完成</Tag> : <Tag color="green">已完成</Tag>
                       )}
                     </FormItem>}
@@ -238,7 +240,7 @@ class BatchDetailView extends Component {
                         initialValue: desc,
                         rules: [{ required: true, message: '描述一下这个批次吧！' }]
                       })(
-                        this.props.formData.status === 0 ? <TextArea rows={5} placeholder="请输入" /> : <span>{desc}</span>
+                        status === 0 ? <TextArea rows={5} placeholder="请输入" /> : <span>{desc}</span>
                       )}
                     </FormItem>
                   </Form>
