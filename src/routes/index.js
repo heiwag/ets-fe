@@ -6,6 +6,7 @@ import BatchDetailView from 'views/Batch/BatchDetailView'
 import PointTrackView from 'views/PointTrack/PointTrackView'
 import PointTrackDetailView from 'views/PointTrack/PointTrackDetailView'
 import PointTestView from 'views/PointTest/PointTestView'
+import PointTestDetail from 'views/PointTest/PointTestDetail'
 import PrdView from 'views/Prd/PrdView'
 
 // import SyncView from 'views/SyncView'
@@ -41,7 +42,11 @@ export default [
         component: PointTrackDetailView
       },
       { path: '/home/point-test',
-        component: PointTestView
+        component: PointTestView,
+        exact: true
+      },
+      { path: '/home/point-test/detail/:pointId/:deviceType',
+        component: PointTestDetail
       },
       { path: '/home/prd',
         component: PrdView

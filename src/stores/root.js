@@ -5,6 +5,7 @@ import BatchDetail from './batchDetail'
 import TrackDetail from './trackDetail'
 import TrackList from './trackList'
 import TestList from './testList'
+import TestDetail from './testDetail'
 
 class RootStore {
   constructor () {
@@ -15,7 +16,8 @@ class RootStore {
       batchDetailStore: new BatchDetail(this),
       trackDetailStore: new TrackDetail(this),
       trackList: new TrackList(this),
-      testListStore: new TestList(this)
+      testListStore: new TestList(this),
+      testDetailStore: new TestDetail(this)
     }
   }
 }

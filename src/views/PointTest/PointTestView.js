@@ -7,7 +7,7 @@ import { observer, inject } from 'mobx-react'
 import {
   Table, Form, Row, Col,
   Button, Input, Select,
-  Tag
+  Tag, Icon
 } from 'antd'
 
 import './PointTestVIew.scss'
@@ -54,7 +54,7 @@ class PointTestView extends Component {
       if (values.pass_status === '-1') {
         delete values.pass_status
       } else {
-        values.pass_status = !!values.pass_status
+        values.pass_status = !!parseInt(values.pass_status, 10)
       }
 
       if (values.business_line === '-1') {
@@ -67,6 +67,10 @@ class PointTestView extends Component {
 
       if (values.batch_id === '-1') {
         delete values.batch_id
+      }
+
+      if (values.device_type === '-1') {
+        delete values.device_type
       }
 
       values.pageIndex = pageIndex
@@ -104,10 +108,10 @@ class PointTestView extends Component {
       dataIndex: 'eventkey',
       key: 'eventkey'
     }, { title: '是否通过',
-      dataIndex: 'pass_status',
-      key: 'pass_status',
       render: (text, record) => {
-        console.log(typeof record.errorCount)
+        if (parseInt(record.totalCount, 10) === 0) {
+          return <Tag color="orange">埋点尚未触发</Tag>
+        }
         if (record.errorCount.toString() === '0') {
           return <Tag color="green">通过</Tag>
         } else {
@@ -119,6 +123,9 @@ class PointTestView extends Component {
       dataIndex: 'totalCount',
       key: 'totalCount',
       render: (text, record) => {
+        if (parseInt(record.totalCount, 10) === 0) {
+          return <span> - </span>
+        }
         const ratio = Math.floor((record.errorCount / record.totalCount) * 100)
         let ratioColor
         if (ratio === 0) ratioColor = 'green'
@@ -147,6 +154,16 @@ class PointTestView extends Component {
       dataIndex: 'business_line',
       key: 'business_line',
       render: (text) => (businessLineTable[text])
+    }, { title: '设备类型',
+      dataIndex: 'device_type',
+      key: 'device_type',
+      render: (text, record) => {
+        if (text === 'ios') {
+          return <Icon type="apple" />
+        } else if (text === 'android') {
+          return <Icon type="android" />
+        }
+      }
     }, { title: '批次名称',
       dataIndex: 'batchName',
       key: 'batchName',
@@ -156,7 +173,9 @@ class PointTestView extends Component {
       key: 'action',
       render: (text, record) => (
         <span>
-          <Link to={{ pathname: `/home/batch/detail/${record.batchid}` }}>Detaile</Link>
+          <Link to={{ pathname: `/home/point-test/detail/${record.pointid}/${record.device_type}` }}>Detaile</Link>
+          <span className="ant-divider" />
+          <Link to={{ pathname: `/home/point-track/detaile/${record.pointid}` }}>查看埋点定义</Link>
         </span>
       )
     }]
@@ -211,6 +230,19 @@ class PointTestView extends Component {
               </FormItem>
             </Col>
             <Col span={8}>
+              <FormItem {...formItemLayout} label="设备类型">
+                {getFieldDecorator('device_type', { initialValue: '-1' })(
+                  <Select
+                    placeholder="请选择"
+                  >
+                    <Option value="-1">全部</Option>
+                    <Option value="Android">android</Option>
+                    <Option value="iOS">ios</Option>
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
               <FormItem {...formItemLayout} label="埋点eventKey">
                 {getFieldDecorator('eventkey')(
                   <Input placeholder="请输入" />
@@ -234,7 +266,7 @@ class PointTestView extends Component {
           className="test-table"
           columns={columns}
           dataSource={this.props.tableData.slice()}
-          rowKey="pointid"
+          rowKey={record => `${record.device_type}-${record.pointid}`}
           expandedRowRender={(record) => <p>{record.desc}</p>}
           pagination={{ pageSize: this.props.pageSize, total: this.props.totalCount }}
           onChange={this.hanlerTablePermeterChange}
