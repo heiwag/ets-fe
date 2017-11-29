@@ -149,7 +149,7 @@ class BatchView extends Component {
       key: 'action',
       render: (text, record) => (
         <span>
-          <Link to={{ pathname: `/home/batch/detail/${record.batchid}` }}>Detaile</Link>
+          <Link to={{ pathname: `/home/batch/detail/${record.batchid}` }}>Detail</Link>
         </span>
       )
     }]

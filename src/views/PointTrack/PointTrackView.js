@@ -162,7 +162,7 @@ class PointTrackView extends Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <Link to={{ pathname: `/home/point-track/detail/${record.pointid}` }}>Detaile</Link>
+            <Link to={{ pathname: `/home/point-track/detail/${record.pointid}` }}>Detail</Link>
           </span>
         )
       }

@@ -173,7 +173,7 @@ class PointTestView extends Component {
       key: 'action',
       render: (text, record) => (
         <span>
-          <Link to={{ pathname: `/home/point-test/detail/${record.pointid}/${record.device_type}` }}>Detaile</Link>
+          <Link to={{ pathname: `/home/point-test/detail/${record.pointid}/${record.device_type}` }}>Detail</Link>
           <span className="ant-divider" />
           <Link to={{ pathname: `/home/point-track/detaile/${record.pointid}` }}>查看埋点定义</Link>
         </span>
