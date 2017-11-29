@@ -3,8 +3,8 @@ import axios from 'axios'
 import domain from '../utils/domain'
 
 class Login {
-  @observable username = { value: 'zhiqiang@guanghe.tv' }
-  @observable password = { value: '123456' }
+  @observable username = { value: '' }
+  @observable password = { value: '' }
   @observable remember = { value: true }
   @observable logged = false
   @observable token = null
