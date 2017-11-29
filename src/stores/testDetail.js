@@ -34,6 +34,17 @@ class TestDetail {
       })
     }
   }
+
+  @action
+  async deleteEvent (pointId, deviceType) {
+    const token = this.rootStore.stores.loginStore.token
+    const res = await axios.post(
+      `${domain.apiDomain}/pointTest/deleteDetail`,
+      { point_id: pointId, device_type: deviceType },
+      { headers: { Authorization: token } }
+    )
+    return !res.data
+  }
 }
 
 export default TestDetail

@@ -6,7 +6,7 @@ import { observer, inject } from 'mobx-react'
 import {
   Table, Form, Row, Col, Button,
   Select, Tag, Icon, DatePicker,
-  Modal
+  Modal, message
 } from 'antd'
 
 import './PointTestVIew.scss'
@@ -91,6 +91,18 @@ class PointTestDetail extends Component {
 
   handlerPointDefine = (record) => {
     this.props.history.push({ pathname: `/home/point-track/detaile/${this.pointId}` })
+  }
+
+  handlerDeleteErrorEvents = () => {
+    this.props.testDetailStore.deleteEvent(this.pointId, this.deviceType).then(() => {
+      message.success('删除成功!', 2, () => {
+        this.props.history.go(-1)
+      })
+    }).catch(() => {
+      message.success('删除失败!', 2, () => {
+        this.props.history.go(-1)
+      })
+    })
   }
 
   handlerPointResult = (record) => {
@@ -199,8 +211,9 @@ class PointTestDetail extends Component {
           </Row>
         </Form>
         <Row className="batch-table-operator">
-          <Col span={6}>
+          <Col span={24}>
             <Button type="primary" icon="bulb" size="large" onClick={this.handlerPointDefine}>查看埋点定义</Button>
+            <Button type="primary" icon="bulb" size="large" style={{ marginLeft: '8px' }} onClick={this.handlerDeleteErrorEvents}>删除所有埋点</Button>
           </Col>
         </Row>
         <Table
