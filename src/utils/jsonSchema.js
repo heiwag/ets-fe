@@ -5,12 +5,10 @@ const mobileCommonValue = {
     u_user: { type: 'string' }, // 用户id
     u_name: { type: 'string' }, // 真实姓名
     u_phone: { type: 'string' }, // 手机
-    u_gender: { enum: ['female', 'male'] }, // 性别
-    u_isVIP: { type: 'boolean' }, // 是否 VIP
+    u_gender: { enum: ['', 'female', 'male'] }, // 性别
     u_type: { type: 'string' }, // 用户的 type
     u_channel: { type: 'string' }, // 用户渠道
     u_role: { type: 'string' }, // 用户角色
-    u_route: { enum: ['a', 'b', 'c'] }, // 用户当前目标
     u_level: { type: 'integer' }, // 用户等级
     u_ability: { type: 'integer' }, // 用户能力值
     u_power: { type: 'integer' }, // 用户积分
@@ -26,18 +24,17 @@ const mobileCommonValue = {
     u_juniorMath: { type: 'string' }, // 年级版本
     u_juniorPhysics: { type: 'string' }, // 年级版本
     u_highMath: { type: 'string' }, // 年级版本
-    d_app_version: { type: 'string' } // app 版本号
+    d_app_version: { type: 'string' }, // app 版本号
+    d_build_id: { type: 'string' } // app 构建版本号
   },
   required: [
     'u_user',
     'u_name',
     'u_phone',
     'u_gender',
-    'u_isVIP',
     'u_type',
     'u_channel',
     'u_role',
-    'u_route',
     'u_level',
     'u_ability',
     'u_power',
@@ -53,7 +50,8 @@ const mobileCommonValue = {
     'u_juniorMath',
     'u_juniorPhysics',
     'u_highMath',
-    'd_app_version'
+    'd_app_version',
+    'd_build_id'
   ]
 }
 
