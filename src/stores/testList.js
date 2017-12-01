@@ -9,9 +9,17 @@ class TestList {
   @observable pageSize = 10
   @observable loading = true
   @observable batchList = []
+  @observable formData = {}
 
   constructor (rootStore) {
     this.rootStore = rootStore
+  }
+
+  @action
+  setField = (filds) => {
+    Object.keys(filds).forEach(fild => {
+      this.formData[fild] = filds[fild]
+    })
   }
 
   @action

@@ -103,6 +103,7 @@ class PointTrackView extends Component {
     const columns = [
       { title: 'eventkey', dataIndex: 'eventkey', key: 'eventkey' },
       { title: 'category', dataIndex: 'eventcategory', key: 'eventcategory' },
+      { title: 'desc', dataIndex: 'desc', key: 'desc' },
       { title: '版本',
         dataIndex: 'version',
         key: 'version',
@@ -162,7 +163,7 @@ class PointTrackView extends Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <Link to={{ pathname: `/home/point-track/detail/${record.pointid}` }}>Detail</Link>
+            <Link to={{ pathname: `/home/point-track/detail/${record.pointid}` }} target="_blank">Detail</Link>
           </span>
         )
       }
@@ -286,7 +287,6 @@ class PointTrackView extends Component {
           columns={columns}
           rowKey="pointid"
           loading={this.props.loading}
-          expandedRowRender={record => <p>{record.desc}</p>}
           dataSource={this.props.tableData.slice()}
           pagination={{ pageSize: this.props.pageSize, total: this.props.totalCount }}
           onChange={this.hanlerTablePermeterChange}

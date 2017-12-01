@@ -38,8 +38,13 @@ class PointTestView extends Component {
     this.props.testList.fetchBatchByChannelAndStatus()
   }
 
-  componentWillMount () {
-    this.props.testList.getTableData({ pageIndex: 1 })
+  // componentWillMount () {
+  //   // this.props.testList.getTableData({ pageIndex: 1 })
+  //   this.searchTable(1)
+  // }
+
+  componentDidMount () {
+    this.searchTable(1)
   }
 
   toggle = () => {
@@ -50,7 +55,6 @@ class PointTestView extends Component {
   searchTable = (pageIndex) => {
     this.props.form.validateFields((err, values) => {
       if (err) return
-
       if (values.pass_status === '-1') {
         delete values.pass_status
       } else {
@@ -107,7 +111,9 @@ class PointTestView extends Component {
       title: 'eventKey',
       dataIndex: 'eventkey',
       key: 'eventkey'
-    }, { title: '是否通过',
+    },
+    { title: 'desc', dataIndex: 'desc', key: 'desc' },
+    { title: '是否通过',
       render: (text, record) => {
         if (parseInt(record.totalCount, 10) === 0) {
           return <Tag color="orange">埋点尚未触发</Tag>
@@ -155,8 +161,8 @@ class PointTestView extends Component {
       key: 'business_line',
       render: (text) => (businessLineTable[text])
     }, { title: '设备类型',
-      dataIndex: 'device_type',
-      key: 'device_type',
+      dataIndex: 'd_type',
+      key: 'd_type',
       render: (text, record) => {
         if (text === 'ios') {
           return <Icon type="apple" />
@@ -173,9 +179,9 @@ class PointTestView extends Component {
       key: 'action',
       render: (text, record) => (
         <span>
-          <Link to={{ pathname: `/home/point-test/detail/${record.pointid}/${record.device_type}` }}>Detail</Link>
+          <Link target="_blank" to={{ pathname: `/home/point-test/detail/${record.pointid}/${record.device_type}` }}>Detail</Link>
           <span className="ant-divider" />
-          <Link to={{ pathname: `/home/point-track/detaile/${record.pointid}` }}>查看埋点定义</Link>
+          <Link target="_blank" to={{ pathname: `/home/point-track/detaile/${record.pointid}` }}>查看埋点定义</Link>
         </span>
       )
     }]
@@ -266,8 +272,7 @@ class PointTestView extends Component {
           className="test-table"
           columns={columns}
           dataSource={this.props.tableData.slice()}
-          rowKey={record => `${record.device_type}-${record.pointid}`}
-          expandedRowRender={(record) => <p>{record.desc}</p>}
+          rowKey={record => `${record.d_type}-${record.pointid}`}
           pagination={{ pageSize: this.props.pageSize, total: this.props.totalCount }}
           onChange={this.hanlerTablePermeterChange}
           loading={this.props.loading}
@@ -286,4 +291,13 @@ export default inject(
     loading: stores.testListStore.loading,
     batchList: stores.testListStore.batchList
   })
-)(observer(Form.create()(PointTestView)))
+)(observer(Form.create({
+  onFieldsChange (props, fields) {
+    props.testList.setField(fields)
+  },
+  mapPropsToFields (props) {
+    // const { username, password, remember } = props.loginStore
+    console.log('form:', props.testList.formData)
+    return props.testList.formData
+  }
+})(PointTestView)))

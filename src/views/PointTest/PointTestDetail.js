@@ -129,7 +129,10 @@ class PointTestDetail extends Component {
       wrapperCol: { span: 18 }
     }
     const { getFieldDecorator } = this.props.form
-    const columns = [{ title: '是否通过',
+    const columns = [{
+      title: 'eventkey', dataIndex: 'eventkey', key: 'eventkey'
+    },
+    { title: '是否通过',
       dataIndex: 'pass_status',
       key: 'pass_status',
       render: (text, record) => {
@@ -221,7 +224,6 @@ class PointTestDetail extends Component {
           columns={columns}
           dataSource={this.props.tableData.slice()}
           rowKey="event_id"
-          expandedRowRender={(record) => <p>{record.desc}</p>}
           pagination={{ pageSize: this.props.pageSize, total: this.props.totalCount }}
           onChange={this.hanlerTablePermeterChange}
           loading={this.props.loading}
