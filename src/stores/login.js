@@ -8,11 +8,12 @@ class Login {
   @observable remember = { value: true }
   @observable logged = false
   @observable token = null
-  @observable userInfo = null
+  @observable userInfo = {}
 
   constructor (rootStore) {
     this.rootStroe = rootStore
     this.token = localStorage.getItem('t')
+    this.verifyToken()
     autorun(() => {
       const token = this.token
       localStorage.setItem('t', token)
@@ -55,7 +56,7 @@ class Login {
   @action
   async verifyToken () {
     const token = localStorage.getItem('t')
-    if (!token) return
+    if (!token || token === 'null') return false
     try {
       const res = await axios.post(
         `${domain.apiDomain}/login/verify`,

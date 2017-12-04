@@ -16,6 +16,11 @@ class Portal {
   @action setSelectKey (key) {
     this.selectKey = key
   }
+
+  @action logout () {
+    localStorage.removeItem('t')
+    window.location.assign(location.origin)
+  }
 }
 
 export default Portal
