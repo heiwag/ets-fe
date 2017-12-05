@@ -387,7 +387,10 @@ class PointTrackDetailView extends Component {
                     })(
                       <Radio.Group>
                         <Radio.Button value="1">Mobile</Radio.Button>
-                        <Radio.Button value="2">PC</Radio.Button>
+                        <Radio.Button value="2">Android</Radio.Button>
+                        <Radio.Button value="3">iOS</Radio.Button>
+                        <Radio.Button value="4">PC</Radio.Button>
+                        <Radio.Button value="5">H5</Radio.Button>
                       </Radio.Group>
                     )}
                   </FormItem>
