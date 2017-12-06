@@ -115,12 +115,14 @@ class PointTrackView extends Component {
         dataIndex: 'channel',
         key: 'chaanel',
         render: (text) => {
-          if (text.toString() === '1') {
-            return <Tag color="blue">Mobile</Tag>
-          } else if (text.toString() === '2') {
-            return <Tag color="green">PC</Tag>
+          if (text.toString() === '2') {
+            return <Tag color="blue">Android</Tag>
           } else if (text.toString() === '3') {
-            return <Tag color="purple">H5</Tag>
+            return <Tag color="green">iOS</Tag>
+          } else if (text.toString() === '4') {
+            return <Tag color="purple">PC</Tag>
+          } else if (text.toString() === '5') {
+            return <Tag color="orange">H5</Tag>
           }
         }
       },
@@ -183,8 +185,10 @@ class PointTrackView extends Component {
                     placeholder="请选择"
                   >
                     <Option value="-1">全部</Option>
-                    <Option value="1">Mobile</Option>
-                    <Option value="2">PC</Option>
+                    <Option value="2">Android</Option>
+                    <Option value="3">iOS</Option>
+                    <Option value="4">PC</Option>
+                    <Option value="5">H5</Option>
                   </Select>
                 )}
               </FormItem>

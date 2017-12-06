@@ -146,13 +146,15 @@ class PointTestView extends Component {
     },
     { title: '埋点类别',
       dataIndex: 'channel',
-      key: 'chaanel',
+      key: 'channel',
       render: (text) => {
-        if (text.toString() === '1') {
-          return <Tag color="blue">Mobile</Tag>
-        } else if (text.toString() === '2') {
-          return <Tag color="green">PC</Tag>
+        if (text.toString() === '2') {
+          return <Tag color="blue">Android</Tag>
         } else if (text.toString() === '3') {
+          return <Tag color="green">iOS</Tag>
+        } else if (text.toString() === '4') {
+          return <Tag color="purple">PC</Tag>
+        } else if (text.toString() === '5') {
           return <Tag color="purple">H5</Tag>
         }
       }
@@ -160,7 +162,7 @@ class PointTestView extends Component {
       dataIndex: 'business_line',
       key: 'business_line',
       render: (text) => (businessLineTable[text])
-    }, { title: '设备类型',
+    }, { title: '发送设备类型',
       dataIndex: 'd_type',
       key: 'd_type',
       render: (text, record) => {
@@ -168,6 +170,10 @@ class PointTestView extends Component {
           return <Icon type="apple" />
         } else if (text === 'android') {
           return <Icon type="android" />
+        } else if (text === 'pc') {
+          return <Icon type="chrome" />
+        } else if (text === 'h5') {
+          return <Icon type="html5" />
         }
       }
     }, { title: '批次名称',

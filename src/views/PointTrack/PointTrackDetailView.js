@@ -370,6 +370,27 @@ class PointTrackDetailView extends Component {
     } = this.props.formData
 
     const isNew = this.isNew
+    const renderChannelGroup = (isNewAction) => {
+      if (isNewAction) {
+        return (
+          <Radio.Group>
+            <Radio.Button value="1">Mobile</Radio.Button>
+            <Radio.Button value="2">Android</Radio.Button>
+            <Radio.Button value="3">iOS</Radio.Button>
+            <Radio.Button value="4">PC</Radio.Button>
+            <Radio.Button value="5">H5</Radio.Button>
+          </Radio.Group>
+        )
+      }
+      return (
+        <Radio.Group>
+          <Radio.Button value="2">Android</Radio.Button>
+          <Radio.Button value="3">iOS</Radio.Button>
+          <Radio.Button value="4">PC</Radio.Button>
+          <Radio.Button value="5">H5</Radio.Button>
+        </Radio.Group>
+      )
+    }
 
     return (
       <div>
@@ -386,13 +407,7 @@ class PointTrackDetailView extends Component {
                       initialValue: channel.toString(),
                       rules: [{ required: true, message: '请选择平台' }]
                     })(
-                      <Radio.Group>
-                        <Radio.Button value="1">Mobile</Radio.Button>
-                        <Radio.Button value="2">Android</Radio.Button>
-                        <Radio.Button value="3">iOS</Radio.Button>
-                        <Radio.Button value="4">PC</Radio.Button>
-                        <Radio.Button value="5">H5</Radio.Button>
-                      </Radio.Group>
+                      renderChannelGroup(isNew)
                     )}
                   </FormItem>
                   <FormItem
