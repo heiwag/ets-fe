@@ -5,7 +5,7 @@ import moment from 'moment'
 import { observer, inject } from 'mobx-react'
 import {
   Table, Form, Row, Col, Button,
-  Select, Tag, Icon, DatePicker,
+  Select, Tag, DatePicker,
   Modal, message
 } from 'antd'
 
@@ -30,16 +30,16 @@ class PointTestDetail extends Component {
   constructor (props) {
     super(props)
     this.state = { expand: false }
-    const { pointId, deviceType } = this.props.match.params
+    const { pointId, channel } = this.props.match.params
     this.pointId = pointId
-    this.deviceType = deviceType
+    this.channel = channel
   }
 
   componentWillMount () {
     this.props.testDetailStore.getTableData({
       pageIndex: 1,
       point_id: this.pointId,
-      device_type: this.deviceType
+      channel: this.channel
     })
   }
 
@@ -70,7 +70,7 @@ class PointTestDetail extends Component {
 
       values.pageIndex = pageIndex
       values.point_id = this.pointId
-      values.device_type = this.deviceType
+      values.channel = this.channel
       this.props.testDetailStore.getTableData(values)
     })
   }
@@ -91,6 +91,22 @@ class PointTestDetail extends Component {
 
   handlerPointDefine = (record) => {
     this.props.history.push({ pathname: `/home/point-track/detaile/${this.pointId}` })
+  }
+
+  handlerDeleteOne = (record) => {
+    this.props.testDetailStore.deleteOne(record.event_id).then(() => {
+      message.success('删除成功!', 2)
+    }).catch(() => {
+      message.success('删除失败!', 2)
+    })
+  }
+
+  handlerKeepOne = () => {
+    this.props.testDetailStore.keepNumber(this.pointId, this.channel, 1).then(() => {
+      message.success('删除成功!', 2)
+    }).catch(() => {
+      message.success('删除失败!', 2)
+    })
   }
 
   handlerDeleteErrorEvents = () => {
@@ -143,13 +159,17 @@ class PointTestDetail extends Component {
         }
       }
     }, { title: '设备类型',
-      dataIndex: 'device_type',
-      key: 'device_type',
+      dataIndex: 'channel',
+      key: 'channel',
       render: (text, record) => {
-        if (text === 'ios') {
-          return <Icon type="apple" />
-        } else if (text === 'android') {
-          return <Icon type="android" />
+        if (text.toString() === '2') {
+          return <Tag color="blue">Android</Tag>
+        } else if (text.toString() === '3') {
+          return <Tag color="green">iOS</Tag>
+        } else if (text.toString() === '4') {
+          return <Tag color="purple">PC</Tag>
+        } else if (text.toString() === '5') {
+          return <Tag color="purple">H5</Tag>
         }
       }
     },
@@ -167,6 +187,8 @@ class PointTestDetail extends Component {
       render: (text, record) => (
         <span>
           <a href="javascript:void(0)" onClick={() => this.handlerPointResult(record)}>查看校验结果</a>
+          <span className="ant-divider" />
+          <a href="javascript:void(0)" onClick={() => this.handlerDeleteOne(record)}>删除</a>
         </span>
       )
     }]
@@ -214,9 +236,10 @@ class PointTestDetail extends Component {
           </Row>
         </Form>
         <Row className="batch-table-operator">
-          <Col span={24}>
+          <Col span={8}>
             <Button type="primary" icon="bulb" size="large" onClick={this.handlerPointDefine}>查看埋点定义</Button>
             <Button type="primary" icon="bulb" size="large" style={{ marginLeft: '8px' }} onClick={this.handlerDeleteErrorEvents}>删除所有埋点</Button>
+            <Button type="primary" icon="bulb" size="large" style={{ marginLeft: '8px' }} onClick={this.handlerKeepOne}>保留最后一条</Button>
           </Col>
         </Row>
         <Table

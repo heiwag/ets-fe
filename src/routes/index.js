@@ -45,7 +45,7 @@ export default [
         component: PointTestView,
         exact: true
       },
-      { path: '/home/point-test/detail/:pointId/:deviceType',
+      { path: '/home/point-test/detail/:pointId/:channel',
         component: PointTestDetail
       },
       { path: '/home/prd',

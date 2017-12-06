@@ -45,6 +45,26 @@ class TestDetail {
     )
     return !res.data
   }
+
+  @action async deleteOne (eventId) {
+    const token = this.rootStore.stores.loginStore.token
+    const res = await axios.post(
+      `${domain.apiDomain}/pointTest/deleteOneDetail`,
+      { eventId },
+      { headers: { Authorization: token } }
+    )
+    return !res.data
+  }
+
+  @action async keepNumber (pointId, channel, keepCount) {
+    const token = this.rootStore.stores.loginStore.token
+    const res = await axios.post(
+      `${domain.apiDomain}/pointTest/deleteOutFirst`,
+      { pointId, channel, keepCount },
+      { headers: { Authorization: token } }
+    )
+    return !res.data
+  }
 }
 
 export default TestDetail

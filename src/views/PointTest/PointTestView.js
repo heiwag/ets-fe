@@ -163,8 +163,8 @@ class PointTestView extends Component {
       key: 'business_line',
       render: (text) => (businessLineTable[text])
     }, { title: '发送设备类型',
-      dataIndex: 'd_type',
-      key: 'd_type',
+      dataIndex: 'device_type',
+      key: 'device_type',
       render: (text, record) => {
         if (text === 'ios') {
           return <Icon type="apple" />
@@ -185,7 +185,7 @@ class PointTestView extends Component {
       key: 'action',
       render: (text, record) => (
         <span>
-          <Link target="_blank" to={{ pathname: `/home/point-test/detail/${record.pointid}/${record.device_type}` }}>Detail</Link>
+          <Link target="_blank" to={{ pathname: `/home/point-test/detail/${record.pointid}/${record.channel}` }}>Detail</Link>
           <span className="ant-divider" />
           <Link target="_blank" to={{ pathname: `/home/point-track/detaile/${record.pointid}` }}>查看埋点定义</Link>
         </span>
@@ -243,13 +243,15 @@ class PointTestView extends Component {
             </Col>
             <Col span={8}>
               <FormItem {...formItemLayout} label="设备类型">
-                {getFieldDecorator('device_type', { initialValue: '-1' })(
+                {getFieldDecorator('channel', { initialValue: '-1' })(
                   <Select
                     placeholder="请选择"
                   >
                     <Option value="-1">全部</Option>
-                    <Option value="Android">android</Option>
-                    <Option value="iOS">ios</Option>
+                    <Option value="2">Android</Option>
+                    <Option value="3">iOS</Option>
+                    <Option value="4">PC</Option>
+                    <Option value="5">H5</Option>
                   </Select>
                 )}
               </FormItem>
