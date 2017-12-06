@@ -192,6 +192,7 @@ class PointTrackDetailView extends Component {
           <Option value="enum">Enum</Option>
           <Option value="boolean">Boolean</Option>
           <Option value="object">Object</Option>
+          <Option value="array">Array</Option>
         </Select>
       )
     }
