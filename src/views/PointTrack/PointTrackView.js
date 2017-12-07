@@ -39,7 +39,7 @@ class PointTrackView extends Component {
     this.state = {
       expand: false
     }
-    this.props.trackList.fetchBatchByChannelAndStatus()
+    this.props.trackList.fetchBatchByChannelAndStatus([0, 1, 2])
   }
 
   componentWillMount () {

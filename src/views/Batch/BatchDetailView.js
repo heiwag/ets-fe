@@ -4,7 +4,8 @@ import { inject, observer } from 'mobx-react'
 import moment from 'moment'
 import {
   Form, Card, Col, Row, Input,
-  Radio, Tag, Spin, Button, message
+  Radio, Tag, Spin, Button, message,
+  Switch
 } from 'antd'
 
 const FormItem = Form.Item
@@ -170,7 +171,8 @@ class BatchDetailView extends Component {
       desc,
       createtime,
       frozetime,
-      status = 0
+      status = 0,
+      isStash = false
     } = this.props.formData
 
     return (
@@ -193,6 +195,16 @@ class BatchDetailView extends Component {
                             <Radio.Button value="3">H5</Radio.Button>
                           </Radio.Group>
                         ) : <span>{channelTable[channel.toString()]}</span>
+                      )}
+                    </FormItem>
+                    <FormItem
+                      label="是否是暂存批次"
+                      {...formItemLayout}
+                    >
+                      {getFieldDecorator('isStash', {
+                        initialValue: isStash
+                      })(
+                        <Switch checkedChildren="是" unCheckedChildren="否" disabled={!isNew} defaultChecked={isStash} />
                       )}
                     </FormItem>
                     <FormItem

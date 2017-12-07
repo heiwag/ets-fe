@@ -35,7 +35,7 @@ class PointTestView extends Component {
     this.state = {
       expand: false
     }
-    this.props.testList.fetchBatchByChannelAndStatus()
+    this.props.testList.fetchBatchByChannelAndStatus([0, 1])
   }
 
   // componentWillMount () {
