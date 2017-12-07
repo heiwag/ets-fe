@@ -172,8 +172,10 @@ class BatchDetailView extends Component {
       createtime,
       frozetime,
       status = 0,
-      isStash = false
+      isStash
     } = this.props.formData
+
+    console.log(isStash)
 
     return (
       <div>
@@ -202,9 +204,10 @@ class BatchDetailView extends Component {
                       {...formItemLayout}
                     >
                       {getFieldDecorator('isStash', {
-                        initialValue: isStash
+                        initialValue: isStash,
+                        valuePropName: 'checked'
                       })(
-                        <Switch checkedChildren="是" unCheckedChildren="否" disabled={!isNew} defaultChecked={isStash} />
+                        <Switch checkedChildren="是" unCheckedChildren="否" disabled={!isNew} />
                       )}
                     </FormItem>
                     <FormItem
@@ -225,7 +228,7 @@ class BatchDetailView extends Component {
                       {getFieldDecorator('status', {
                         initialValue: status
                       })(
-                        status === 0 ? <Tag color="blue">未完成</Tag> : <Tag color="green">已完成</Tag>
+                        status === 0 ? <Tag color="blue">未完成</Tag> : (status === 1 ? <Tag color="green">已完成</Tag> : <Tag color="orange">Stash</Tag>)
                       )}
                     </FormItem>}
                     {isNew ? null : <FormItem
