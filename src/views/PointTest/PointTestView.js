@@ -27,6 +27,7 @@ class PointTestView extends Component {
     batchList: PropTypes.object,
     totalCount: PropTypes.number,
     pageSize: PropTypes.number,
+    pageIndex: PropTypes.number,
     loading: PropTypes.bool
   }
 
@@ -37,11 +38,6 @@ class PointTestView extends Component {
     }
     this.props.testList.fetchBatchByChannelAndStatus([0, 1])
   }
-
-  // componentWillMount () {
-  //   // this.props.testList.getTableData({ pageIndex: 1 })
-  //   this.searchTable(1)
-  // }
 
   componentDidMount () {
     this.searchTable(1)
@@ -87,12 +83,14 @@ class PointTestView extends Component {
   }
 
   handleSearch = (e) => {
+    this.props.testList.setPageIndex(1)
     e.preventDefault()
     this.searchTable(1)
   }
 
   hanlerTablePermeterChange = (pagination, filters, sorter) => {
     const { current } = pagination
+    this.props.testList.setPageIndex(current)
     this.searchTable(current)
   }
 
@@ -281,7 +279,7 @@ class PointTestView extends Component {
           columns={columns}
           dataSource={this.props.tableData.slice()}
           rowKey={record => `${record.d_type}-${record.pointid}`}
-          pagination={{ pageSize: this.props.pageSize, total: this.props.totalCount }}
+          pagination={{ current: this.props.pageIndex, pageSize: this.props.pageSize, total: this.props.totalCount }}
           onChange={this.hanlerTablePermeterChange}
           loading={this.props.loading}
         />
@@ -296,6 +294,7 @@ export default inject(
     tableData: stores.testListStore.tableData,
     totalCount: stores.testListStore.totalCount,
     pageSize: stores.testListStore.pageSize,
+    pageIndex: stores.testListStore.pageIndex,
     loading: stores.testListStore.loading,
     batchList: stores.testListStore.batchList
   })
@@ -305,7 +304,6 @@ export default inject(
   },
   mapPropsToFields (props) {
     // const { username, password, remember } = props.loginStore
-    console.log('form:', props.testList.formData)
     return props.testList.formData
   }
 })(PointTestView)))

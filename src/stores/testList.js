@@ -7,6 +7,7 @@ class TestList {
   @observable testList = []
   @observable totalCount = 0
   @observable pageSize = 10
+  @observable pageIndex = 1
   @observable loading = true
   @observable batchList = []
   @observable formData = {}
@@ -20,6 +21,11 @@ class TestList {
     Object.keys(filds).forEach(fild => {
       this.formData[fild] = filds[fild]
     })
+  }
+
+  @action
+  setPageIndex = (pageIndex) => {
+    this.pageIndex = pageIndex
   }
 
   @action
