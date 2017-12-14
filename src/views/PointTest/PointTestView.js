@@ -9,6 +9,7 @@ import {
   Button, Input, Select,
   Tag, Icon
 } from 'antd'
+import { hasEnumProp } from '../../utils/enumHelp'
 
 import './PointTestVIew.scss'
 
@@ -142,6 +143,22 @@ class PointTestView extends Component {
             <span><Tag color={ratioColor}>{`${ratio}%`}</Tag></span>
           </span>
         )
+      }
+    }, {
+      title: '枚举状态',
+      render: (text, record) => {
+        const hasEnum = hasEnumProp(record.rawjsonschema)
+        if (hasEnum) {
+          if (record.enum_status === 0) {
+            return <Icon type="meh" style={{ color: '#F85959' }} />
+          } else if (record.enum_status === 1) {
+            return <Icon type="smile" style={{ color: 'green' }} />
+          } else if (record.enum_status === 2) {
+            return <Icon type="frown" style={{ color: 'red' }} />
+          }
+        }
+
+        return '-'
       }
     },
     { title: '埋点类别',
