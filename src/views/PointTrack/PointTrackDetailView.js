@@ -34,7 +34,7 @@ class PointTrackDetailView extends Component {
     this.action = action
     this.isNew = action === 'new'
     this.pointId = pointId
-    this.props.trackDetailStore.fetchBatchByChannelAndStatus()
+    this.props.trackDetailStore.fetchBatchByChannelAndStatus([0, 2])
     if (!this.isNew) {
       this.props.trackDetailStore.getPointById(pointId)
     } else {

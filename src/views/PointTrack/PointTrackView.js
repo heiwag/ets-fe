@@ -30,6 +30,7 @@ class PointTrackView extends Component {
     tableData: PropTypes.object,
     totalCount: PropTypes.number,
     pageSize: PropTypes.number,
+    pageIndex: PropTypes.number,
     batchList: PropTypes.object,
     loading: PropTypes.bool
   }
@@ -39,7 +40,7 @@ class PointTrackView extends Component {
     this.state = {
       expand: false
     }
-    this.props.trackList.fetchBatchByChannelAndStatus()
+    this.props.trackList.fetchBatchByChannelAndStatus([0, 1, 2])
   }
 
   componentWillMount () {
@@ -86,11 +87,13 @@ class PointTrackView extends Component {
 
   handleSearch = (e) => {
     e.preventDefault()
+    this.props.trackList.setPageIndex(1)
     this.searchTable(1)
   }
 
   hanlerTablePermeterChange = (pagination, filters, sorter) => {
     const { current } = pagination
+    this.props.trackList.setPageIndex(current)
     this.searchTable(current)
   }
 
@@ -289,10 +292,10 @@ class PointTrackView extends Component {
         <Table
           className="point_track-table"
           columns={columns}
-          rowKey="pointid"
+          rowKey={(record) => `${record.pointid}-${record.channel}-${record.device_id}`}
           loading={this.props.loading}
           dataSource={this.props.tableData.slice()}
-          pagination={{ pageSize: this.props.pageSize, total: this.props.totalCount }}
+          pagination={{ current: this.props.pageIndex, pageSize: this.props.pageSize, total: this.props.totalCount }}
           onChange={this.hanlerTablePermeterChange}
         />
       </div>
@@ -305,6 +308,7 @@ export default inject(
     trackList: stores.trackList,
     tableData: stores.trackList.tableData,
     pageSize: stores.trackList.pageSize,
+    pageIndex: stores.trackList.pageIndex,
     totalCount: stores.trackList.totalCount,
     loading: stores.trackList.loading,
     batchList: stores.trackList.batchList

@@ -4,7 +4,8 @@ import { inject, observer } from 'mobx-react'
 import moment from 'moment'
 import {
   Form, Card, Col, Row, Input,
-  Radio, Tag, Spin, Button, message
+  Radio, Tag, Spin, Button, message,
+  Switch
 } from 'antd'
 
 const FormItem = Form.Item
@@ -170,8 +171,11 @@ class BatchDetailView extends Component {
       desc,
       createtime,
       frozetime,
-      status = 0
+      status = 0,
+      isStash
     } = this.props.formData
+
+    console.log(isStash)
 
     return (
       <div>
@@ -196,6 +200,17 @@ class BatchDetailView extends Component {
                       )}
                     </FormItem>
                     <FormItem
+                      label="是否是暂存批次"
+                      {...formItemLayout}
+                    >
+                      {getFieldDecorator('isStash', {
+                        initialValue: isStash,
+                        valuePropName: 'checked'
+                      })(
+                        <Switch checkedChildren="是" unCheckedChildren="否" disabled={!isNew} />
+                      )}
+                    </FormItem>
+                    <FormItem
                       label="批次名称"
                       {...formItemLayout}
                     >
@@ -213,7 +228,7 @@ class BatchDetailView extends Component {
                       {getFieldDecorator('status', {
                         initialValue: status
                       })(
-                        status === 0 ? <Tag color="blue">未完成</Tag> : <Tag color="green">已完成</Tag>
+                        status === 0 ? <Tag color="blue">未完成</Tag> : (status === 1 ? <Tag color="green">已完成</Tag> : <Tag color="orange">Stash</Tag>)
                       )}
                     </FormItem>}
                     {isNew ? null : <FormItem

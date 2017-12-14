@@ -125,11 +125,15 @@ class BatchView extends Component {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: (text) => (
-        (text === 0)
-          ? <Badge status="processing" text="Processing" />
-          : <Badge status="success" text="Complete" />
-      )
+      render: (text) => {
+        if (text.toString() === '0') {
+          return <Badge status="processing" text="Processing" />
+        } else if (text.toString() === '1') {
+          return <Badge status="success" text="Success" />
+        } else if (text.toString() === '2') {
+          return <Badge status="warning" text="Stash" />
+        }
+      }
     }, {
       title: '创建时间',
       dataIndex: 'createtime',

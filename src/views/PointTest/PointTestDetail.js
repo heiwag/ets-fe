@@ -24,6 +24,7 @@ class PointTestDetail extends Component {
     tableData: PropTypes.object,
     totalCount: PropTypes.number,
     pageSize: PropTypes.number,
+    pageIndex: PropTypes.number,
     loading: PropTypes.bool
   }
 
@@ -80,12 +81,14 @@ class PointTestDetail extends Component {
   }
 
   handleSearch = (e) => {
+    this.props.testDetailStore.setPageIndex(1)
     e.preventDefault()
     this.searchTable(1)
   }
 
   hanlerTablePermeterChange = (pagination, filters, sorter) => {
     const { current } = pagination
+    this.props.testDetailStore.setPageIndex(current)
     this.searchTable(current)
   }
 
@@ -236,7 +239,7 @@ class PointTestDetail extends Component {
           </Row>
         </Form>
         <Row className="batch-table-operator">
-          <Col span={8}>
+          <Col span={24}>
             <Button type="primary" icon="bulb" size="large" onClick={this.handlerPointDefine}>查看埋点定义</Button>
             <Button type="primary" icon="bulb" size="large" style={{ marginLeft: '8px' }} onClick={this.handlerDeleteErrorEvents}>删除所有埋点</Button>
             <Button type="primary" icon="bulb" size="large" style={{ marginLeft: '8px' }} onClick={this.handlerKeepOne}>保留最后一条</Button>
@@ -247,7 +250,7 @@ class PointTestDetail extends Component {
           columns={columns}
           dataSource={this.props.tableData.slice()}
           rowKey="event_id"
-          pagination={{ pageSize: this.props.pageSize, total: this.props.totalCount }}
+          pagination={{ current: this.props.pageIndex, pageSize: this.props.pageSize, total: this.props.totalCount }}
           onChange={this.hanlerTablePermeterChange}
           loading={this.props.loading}
         />
@@ -262,6 +265,7 @@ export default inject(
     tableData: stores.testDetailStore.tableData,
     totalCount: stores.testDetailStore.totalCount,
     pageSize: stores.testDetailStore.pageSize,
+    pageIndex: stores.testDetailStore.pageIndex,
     loading: stores.testDetailStore.loading
   })
 )(observer(Form.create()(PointTestDetail)))

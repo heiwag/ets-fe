@@ -6,11 +6,17 @@ class TrackList {
   @observable tableData = []
   @observable totalCount = 0
   @observable pageSize = 10
+  @observable pageIndex = 1
   @observable loading = true
   @observable batchList = []
 
   constructor (rootStore) {
     this.rootStore = rootStore
+  }
+
+  @action
+  setPageIndex (pageIndex) {
+    this.pageIndex = pageIndex
   }
 
   @action
