@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { observer, inject } from 'mobx-react'
+import { Row, Col, Card } from 'antd'
 
-@inject(stores => ({ testListStore: stores.testListStore, enumStatus: stores.testListStore.enumStatus }))
+@inject(stores => ({
+  testListStore: stores.testListStore,
+  enumStatus: stores.testListStore.enumStatus
+}))
 @observer
 export default class PointTestEnum extends Component {
   static propTypes = {
@@ -24,10 +28,18 @@ export default class PointTestEnum extends Component {
   }
 
   renderEnumStatus = (enumStatus) => {
-    return <code>{JSON.stringify(enumStatus)}</code>
+    return <pre>{JSON.stringify(enumStatus, null, '\t')}</pre>
   }
 
   render () {
-    return this.renderEnumStatus(this.props.enumStatus)
+    return (
+      <Row>
+        <Col span={24}>
+          <Card title="枚举状态">
+            { this.renderEnumStatus(this.props.enumStatus) }
+          </Card>
+        </Col>
+      </Row>
+    )
   }
 }
