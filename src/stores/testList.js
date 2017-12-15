@@ -11,6 +11,7 @@ class TestList {
   @observable loading = true
   @observable batchList = []
   @observable formData = {}
+  @observable enumStatus = null
 
   constructor (rootStore) {
     this.rootStore = rootStore
@@ -62,6 +63,22 @@ class TestList {
 
     runInAction(() => {
       this.batchList = res.data
+    })
+
+    return !res.data.err
+  }
+
+  @action
+  async verifyEnum (pointId) {
+    const token = this.rootStore.stores.loginStore.token
+    const res = await axios.post(
+      `${domain.apiDomain}/pointTest/verifyEnum`,
+      { pointId },
+      { headers: { Authorization: token } }
+    )
+
+    runInAction(() => {
+      this.enumStatus = res.data
     })
 
     return !res.data.err

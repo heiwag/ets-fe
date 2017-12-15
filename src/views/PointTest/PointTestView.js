@@ -99,6 +99,10 @@ class PointTestView extends Component {
     this.props.history.push({ pathname: `/home/batch/detaile/${batchid}` })
   }
 
+  handleModalOk = () => {
+
+  }
+
   render () {
     const formItemLayout = {
       labelCol: { span: 6 },
@@ -111,6 +115,19 @@ class PointTestView extends Component {
       key: 'eventkey'
     },
     { title: 'desc', dataIndex: 'desc', key: 'desc' },
+    {
+      title: '枚举值状态',
+      dataIndex: 'enum_status',
+      key: 'enum_status',
+      render: (text, record) => {
+        switch (record.enum_status) {
+          case -1: return '-'
+          case 0: return <Tag color="orange">未校验</Tag>
+          case 1: return <Tag color="green">校验通过</Tag>
+          case 2: return <Tag color="red">校验未通过</Tag>
+        }
+      }
+    },
     { title: '是否通过',
       render: (text, record) => {
         if (parseInt(record.totalCount, 10) === 0) {
@@ -186,6 +203,8 @@ class PointTestView extends Component {
           <Link target="_blank" to={{ pathname: `/home/point-test/detail/${record.pointid}/${record.channel}` }}>Detail</Link>
           <span className="ant-divider" />
           <Link target="_blank" to={{ pathname: `/home/point-track/detaile/${record.pointid}` }}>查看埋点定义</Link>
+          { record.enum_status > -1 ? <span className="ant-divider" /> : null }
+          { record.enum_status > -1 ? <Link target="_blank" to={{ pathname: `/home/point-test/enum/${record.pointid}` }}>Enum</Link> : null }
         </span>
       )
     }]
@@ -296,7 +315,8 @@ export default inject(
     pageSize: stores.testListStore.pageSize,
     pageIndex: stores.testListStore.pageIndex,
     loading: stores.testListStore.loading,
-    batchList: stores.testListStore.batchList
+    batchList: stores.testListStore.batchList,
+    modalVisible: stores.testListStore.modalVisible
   })
 )(observer(Form.create({
   onFieldsChange (props, fields) {
