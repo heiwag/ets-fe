@@ -7,6 +7,7 @@ import PointTrackView from 'views/PointTrack/PointTrackView'
 import PointTrackDetailView from 'views/PointTrack/PointTrackDetailView'
 import PointTestView from 'views/PointTest/PointTestView'
 import PointTestDetail from 'views/PointTest/PointTestDetail'
+import PointTestEnum from 'views/PointTest/PointTestEnum'
 import PrdView from 'views/Prd/PrdView'
 
 // import SyncView from 'views/SyncView'
@@ -47,6 +48,9 @@ export default [
       },
       { path: '/home/point-test/detail/:pointId/:channel',
         component: PointTestDetail
+      },
+      { path: '/home/point-test/enum/:pointId',
+        component: PointTestEnum
       },
       { path: '/home/prd',
         component: PrdView
