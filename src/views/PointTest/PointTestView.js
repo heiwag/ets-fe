@@ -9,7 +9,6 @@ import {
   Button, Input, Select,
   Tag, Icon
 } from 'antd'
-import { hasEnumProp } from '../../utils/enumHelp'
 
 import './PointTestVIew.scss'
 
@@ -72,6 +71,10 @@ class PointTestView extends Component {
 
       if (values.device_type === '-1') {
         delete values.device_type
+      }
+
+      if (values.enum_status === '-1') {
+        delete values.enum_status
       }
 
       values.pageIndex = pageIndex
@@ -158,22 +161,6 @@ class PointTestView extends Component {
             <span><Tag color={ratioColor}>{`${ratio}%`}</Tag></span>
           </span>
         )
-      }
-    }, {
-      title: '枚举状态',
-      render: (text, record) => {
-        const hasEnum = hasEnumProp(record.rawjsonschema)
-        if (hasEnum) {
-          if (record.enum_status === 0) {
-            return <Icon type="meh" style={{ color: '#F85959' }} />
-          } else if (record.enum_status === 1) {
-            return <Icon type="smile" style={{ color: 'green' }} />
-          } else if (record.enum_status === 2) {
-            return <Icon type="frown" style={{ color: 'red' }} />
-          }
-        }
-
-        return '-'
       }
     },
     { title: '埋点类别',
@@ -271,6 +258,19 @@ class PointTestView extends Component {
                     <Option value="2">专业能力线</Option>
                     <Option value="3">情感能力线</Option>
                     <Option value="4">产品运营线</Option>
+                  </Select>
+                )}
+              </FormItem>
+            </Col>
+            <Col span={8}>
+              <FormItem {...formItemLayout} label="枚举状态">
+                {getFieldDecorator('enum_status', { initialValue: '-1' })(
+                  <Select
+                    placeholder="请选择"
+                  >
+                    <Option value="-1">全部</Option>
+                    <Option value="1">枚举正常</Option>
+                    <Option value="0">枚举异常</Option>
                   </Select>
                 )}
               </FormItem>

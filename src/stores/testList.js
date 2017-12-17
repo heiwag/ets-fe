@@ -1,5 +1,6 @@
 import { observable, action, runInAction } from 'mobx'
 import axios from 'axios'
+import _ from 'lodash'
 import domain from '../utils/domain'
 
 class TestList {
@@ -12,6 +13,7 @@ class TestList {
   @observable batchList = []
   @observable formData = {}
   @observable enumStatus = null
+  @observable enumSuccess = false
 
   constructor (rootStore) {
     this.rootStore = rootStore
@@ -78,10 +80,11 @@ class TestList {
     )
 
     runInAction(() => {
-      this.enumStatus = res.data
+      this.enumStatus = res.data.enumStatus
+      this.enumSuccess = res.data.enumSuccess
     })
 
-    return !res.data.err
+    return _.get(res, 'data.enumSuccess', false)
   }
 }
 
