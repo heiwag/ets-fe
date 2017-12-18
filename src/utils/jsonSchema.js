@@ -71,7 +71,7 @@ export function getJsonSchema (hasCommonProp = true, propsModel, category) {
     }
   })
 
-  properties['category'] = { "pattern": category }
+  properties['category'] = { 'pattern': category }
 
   if (hasCommonProp) {
     let _properties = mobileCommonValue.properties
