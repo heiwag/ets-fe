@@ -4,6 +4,7 @@ import { _uuid } from '../utils/uuid'
 import axios from 'axios'
 import domain from '../utils/domain'
 import { getJsonSchema } from '../utils/jsonSchema'
+import { hasEnumProp } from '../utils/enumHelp'
 
 class TrackDetail {
   @observable action = 'new'
@@ -128,7 +129,8 @@ class TrackDetail {
     let newModel = formData
     const token = this.rootStore.stores.loginStore.token
     newModel.rawjsonschema = JSON.stringify(this.pointProps.slice())
-    newModel.jsonschema = getJsonSchema(formData.hascommon, this.pointProps.slice())
+    newModel.jsonschema = getJsonSchema(formData.hascommon, this.pointProps.slice(), formData.eventcategory)
+    newModel.enum_status = hasEnumProp(this.pointProps)
     delete newModel.batchName
     const res = await axios.post(
       `${domain.apiDomain}/pointPool/addNewPoint`,
@@ -189,7 +191,8 @@ class TrackDetail {
     let pointModel = formData
     delete pointModel.batchName
     pointModel.rawjsonschema = JSON.stringify(this.pointProps.slice())
-    pointModel.jsonschema = getJsonSchema(formData.hascommon, this.pointProps.slice())
+    pointModel.jsonschema = getJsonSchema(formData.hascommon, this.pointProps.slice(), formData.eventcategory)
+    pointModel.enum_status = hasEnumProp(this.pointProps)
     const res = await axios.post(
       `${domain.apiDomain}/pointPool/updata`,
       pointModel,
@@ -207,7 +210,8 @@ class TrackDetail {
     const token = this.rootStore.stores.loginStore.token
     delete newModel.batchName
     newModel.rawjsonschema = JSON.stringify(this.pointProps.slice())
-    newModel.jsonschema = getJsonSchema(formData.hascommon, this.pointProps.slice())
+    newModel.jsonschema = getJsonSchema(formData.hascommon, this.pointProps.slice(), formData.eventcategory)
+    newModel.enum_status = hasEnumProp(this.pointProps)
     const res = await axios.post(
       `${domain.apiDomain}/pointPool/newVersion`,
       newModel,

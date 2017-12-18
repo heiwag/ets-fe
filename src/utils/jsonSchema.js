@@ -55,7 +55,7 @@ const mobileCommonValue = {
   ]
 }
 
-export function getJsonSchema (hasCommonProp = true, propsModel) {
+export function getJsonSchema (hasCommonProp = true, propsModel, category) {
   if (!_.isArray(propsModel)) return {}
   let properties = {}
   let required = []
@@ -70,6 +70,9 @@ export function getJsonSchema (hasCommonProp = true, propsModel) {
       required.push(propName)
     }
   })
+
+  properties['category'] = { "pattern": category }
+
   if (hasCommonProp) {
     let _properties = mobileCommonValue.properties
     let _required = mobileCommonValue.required
