@@ -36,7 +36,7 @@ class PointTestView extends Component {
     this.state = {
       expand: false
     }
-    this.props.testList.fetchBatchByChannelAndStatus([0])
+    this.props.testList.fetchBatchByChannelAndStatus([0, 1, 2])
   }
 
   componentDidMount () {
@@ -226,7 +226,7 @@ class PointTestView extends Component {
                   <Select>
                     <Option value="-1">全部</Option>
                     {
-                      this.props.batchList.slice().map(item => (
+                      this.props.batchList.slice().filter(x => x.status === 0).map(item => (
                         <Option key={item.batchid} value={item.batchid}>{`${channelTable[item.channel]} - ${item.name}`}</Option>
                       ))
                     }
