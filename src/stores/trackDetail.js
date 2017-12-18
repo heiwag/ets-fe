@@ -234,6 +234,17 @@ class TrackDetail {
 
     return !res.data.err
   }
+
+  @action
+  async changePointStatus (pointId, action) {
+    const token = this.rootStore.stores.loginStore.token
+    const res = await axios.post(
+      `${domain.apiDomain}/pointPool/changePointStatus`,
+      { pointId, action },
+      { headers: { Authorization: token } }
+    )
+    return !res.data.err
+  }
 }
 
 export default TrackDetail

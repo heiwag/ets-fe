@@ -150,6 +150,54 @@ class PointTrackDetailView extends Component {
     })
   }
 
+  /**
+   * 暂停埋点
+   */
+  handlerClicStopPoint = () => {
+    const pointId = this.pointId
+    confirm({
+      title: '警告',
+      content: '将会停用该 channel 下的该版本埋点',
+      okText: '停用',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk: () => {
+        this.props.trackDetailStore.changePointStatus(pointId, 'stop')
+          .then(err => {
+            if (err) return
+            message.success('停用成功！', 3)
+          })
+          .catch(err => {
+            message.error(err.response.data.msg, 3)
+          })
+      }
+    })
+  }
+
+  /**
+   * 重新启用埋点
+   */
+  handlerClickStartPoint = () => {
+    const pointId = this.pointId
+    confirm({
+      title: '警告',
+      content: '启用该版本埋点，将会自动停用其他版本埋点，只会影响同 channel 的埋点，比如 android，ios',
+      okText: '启用',
+      okType: 'danger',
+      cancelText: '取消',
+      onOk: () => {
+        this.props.trackDetailStore.changePointStatus(pointId, 'start')
+          .then(err => {
+            if (err) return
+            message.success('启用成功！', 3)
+          })
+          .catch(err => {
+            message.error(err.response.data.msg, 3)
+          })
+      }
+    })
+  }
+
   renderInputColumns = (text, record, key) => {
     if (this.props.isEditor) {
       return (
@@ -292,7 +340,7 @@ class PointTrackDetailView extends Component {
         <Col span={24} style={{ textAlign: 'right' }}>
           <Popconfirm title="发自内心的想删除?" onConfirm={() => { this.handlerDeletePoint(this.pointId) }} okText="删除" cancelText="取消">
             <Button
-              type="primary"
+              type="danger"
               size="large"
               icon="delete"
             >删除</Button>
@@ -366,7 +414,8 @@ class PointTrackDetailView extends Component {
       version,
       hascommon,
       business_line,
-      batch_id
+      batch_id,
+      status
     } = this.props.formData
 
     const isNew = this.isNew
@@ -494,6 +543,8 @@ class PointTrackDetailView extends Component {
                     <Popover content={<span style={{ color: '#999' }}>新建埋点默认版本为 v1</span>} trigger="hover">
                       <Tag color="blue">{`v${version}`}</Tag>
                     </Popover>
+                    { status === 1 ? <Button type="primary" onClick={this.handlerClicStopPoint}>停用该版本</Button> : null }
+                    { status === 0 ? <Button type="primary" onClick={this.handlerClickStartPoint}>启用该版本</Button> : null }
                   </FormItem>
                 </Form>
               </Card>
