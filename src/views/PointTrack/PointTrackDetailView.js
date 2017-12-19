@@ -163,9 +163,10 @@ class PointTrackDetailView extends Component {
       cancelText: '取消',
       onOk: () => {
         this.props.trackDetailStore.changePointStatus(pointId, 'stop')
-          .then(err => {
-            if (err) return
-            message.success('停用成功！', 3)
+          .then(res => {
+            if (res) {
+              message.success('停用成功！', 3)
+            }
           })
           .catch(err => {
             message.error(err.response.data.msg, 3)
@@ -187,9 +188,10 @@ class PointTrackDetailView extends Component {
       cancelText: '取消',
       onOk: () => {
         this.props.trackDetailStore.changePointStatus(pointId, 'start')
-          .then(err => {
-            if (err) return
-            message.success('启用成功！', 3)
+          .then(res => {
+            if (res) {
+              message.success('启用成功！', 3)
+            }
           })
           .catch(err => {
             message.error(err.response.data.msg, 3)
