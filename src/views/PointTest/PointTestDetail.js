@@ -113,7 +113,7 @@ class PointTestDetail extends Component {
   }
 
   handlerDeleteErrorEvents = () => {
-    this.props.testDetailStore.deleteEvent(this.pointId, this.deviceType).then(() => {
+    this.props.testDetailStore.deleteEvent(this.pointId, this.channel).then(() => {
       message.success('删除成功!', 2, () => {
         this.props.history.go(-1)
       })
