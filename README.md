@@ -1,6 +1,5 @@
 # ets-fe
-
-## Usage
+Event tracking system UI
 
 ```bash
 # install all this dependencies.
