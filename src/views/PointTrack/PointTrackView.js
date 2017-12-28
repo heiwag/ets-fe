@@ -220,6 +220,7 @@ class PointTrackView extends Component {
                     <Option value="2">专业能力线</Option>
                     <Option value="3">情感能力线</Option>
                     <Option value="4">产品运营线</Option>
+                    <Option value="5">家长线</Option>
                   </Select>
                 )}
               </FormItem>
