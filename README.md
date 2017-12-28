@@ -1,6 +1,7 @@
 # ets-fe
 Event tracking system UI
 
+## use
 ```bash
 # install all this dependencies.
 npm install
