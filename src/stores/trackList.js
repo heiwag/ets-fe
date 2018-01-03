@@ -9,6 +9,9 @@ class TrackList {
   @observable pageIndex = 1
   @observable loading = true
   @observable batchList = []
+  @observable allUser = []
+  @observable selectedRowKeys = []
+  @observable selectUserId = ''
 
   constructor (rootStore) {
     this.rootStore = rootStore
@@ -17,6 +20,32 @@ class TrackList {
   @action
   setPageIndex (pageIndex) {
     this.pageIndex = pageIndex
+  }
+
+  @action
+  setPageSize (pageSize) {
+    this.pageSize = pageSize
+  }
+
+  @action
+  setSelectedRowKeys (selectedRowKeys) {
+    this.selectedRowKeys = selectedRowKeys
+  }
+
+  @action
+  setSelectUserId = selectUserId => {
+    this.selectUserId = selectUserId
+  }
+
+  @action
+  updateTableName (selectRowKeys, selectUserId) {
+    this.tableData.forEach(point => {
+      const hasChange = selectRowKeys.indexOf(point.pointid) > -1
+      if (hasChange) {
+        point.head_dev = selectUserId
+      }
+    })
+    this.tableData = this.tableData.slice()
   }
 
   @action
@@ -56,6 +85,34 @@ class TrackList {
     })
 
     return !res.data.err
+  }
+
+  @action
+  async updatePointHeadDev (pointId, headDev) {
+    const token = this.rootStore.stores.loginStore.token
+    const res = await axios.post(
+      `${domain.apiDomain}/pointPool/updatePointHeadName`,
+      { pointId, headDev },
+      { headers: { Authorization: token } }
+    )
+    return res.data.err
+  }
+
+  @action
+  async getAllUser () {
+    const token = this.rootStore.stores.loginStore.token
+    const res = await axios.get(
+      `${domain.apiDomain}/users/allUser`,
+      { headers: { Authorization: token } }
+    )
+
+    if (res.data.err) {
+      return res.data.err
+    } else {
+      runInAction(() => {
+        this.allUser = res.data
+      })
+    }
   }
 }
 

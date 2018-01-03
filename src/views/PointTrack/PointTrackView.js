@@ -7,10 +7,11 @@ import { Link } from 'react-router-dom'
 import {
   Table, Form, Row, Col, Button,
   Tag, Badge, Input, Select, DatePicker,
-  Icon
+  Icon, Modal, message
 } from 'antd'
 
 import { channelTable, businessLineTable } from '../../utils/stringTable'
+import EditableCell from './components/editableCell'
 
 import './PointTrackView.scss'
 
@@ -32,19 +33,24 @@ class PointTrackView extends Component {
     pageSize: PropTypes.number,
     pageIndex: PropTypes.number,
     batchList: PropTypes.object,
-    loading: PropTypes.bool
+    loading: PropTypes.bool,
+    allUser: PropTypes.object,
+    selectedRowKeys: PropTypes.object,
+    selectUserId: PropTypes.string
   }
 
   constructor (props) {
     super(props)
     this.state = {
-      expand: false
+      expand: false,
+      visible: false
     }
     this.props.trackList.fetchBatchByChannelAndStatus([0, 1, 2])
   }
 
   componentWillMount () {
     this.props.trackList.fetTableList({ pageIndex: 1 })
+    this.props.trackList.getAllUser()
   }
 
   toggle = () => {
@@ -92,9 +98,76 @@ class PointTrackView extends Component {
   }
 
   hanlerTablePermeterChange = (pagination, filters, sorter) => {
-    const { current } = pagination
+    const { current, pageSize } = pagination
+    this.props.trackList.setPageSize(pageSize)
     this.props.trackList.setPageIndex(current)
     this.searchTable(current)
+  }
+
+  handleHeadDevChange = (pointId, headDev) => {
+    this.props.trackList.updatePointHeadDev(pointId, headDev)
+  }
+
+  handleSelectChange = (selectedRowKeys) => {
+    this.props.trackList.setSelectedRowKeys(selectedRowKeys)
+  }
+
+  handlerShowSetPointHeadModel = () => {
+    this.setState({ visible: true })
+  }
+
+  handlerHideSetPointHeadModel = () => {
+    this.setState({ visible: false })
+  }
+
+  handlerSetPointsHead = () => {
+    const { selectUserId, selectedRowKeys } = this.props
+    this.props.trackList
+      .updatePointHeadDev(selectedRowKeys.slice(), selectUserId)
+      .then(err => {
+        if (err) {
+          message.error('设置失败!', 3)
+        } else {
+          message.success('设置成功!', 3)
+          this.handlerHideSetPointHeadModel()
+          this.props.trackList.updateTableName(selectedRowKeys, selectUserId)
+        }
+      }, () => message.error('设置失败!', 3))
+  }
+
+  handlerCheck = value => {
+    this.props.trackList.setSelectUserId(value)
+  }
+
+  renderUserSelect = () => {
+    const allUser = this.props.allUser.slice()
+    return allUser.map(user => (
+      <Option key={user.id} value={user.id}>{user.name}</Option>
+    ))
+  }
+
+  renderSetPointHeadModel = () => {
+    return (
+      <Modal
+        title="批量设置设置埋点负责人"
+        visible={this.state.visible}
+        onOk={this.handlerSetPointsHead}
+        onCancel={this.handlerHideSetPointHeadModel}
+      >
+        <div>
+          <Select
+            showSearch
+            style={{ width: 200 }}
+            placeholder="选择负责人"
+            optionFilterProp="children"
+            onChange={this.handlerCheck}
+            filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+          >
+            {this.renderUserSelect()}
+          </Select>
+        </div>
+      </Modal>
+    )
   }
 
   render () {
@@ -128,6 +201,16 @@ class PointTrackView extends Component {
             return <Tag color="orange">H5</Tag>
           }
         }
+      },
+      { title: '负责人',
+        dataIndex: 'head_dev',
+        key: 'head_dev',
+        render: (text, record) => (
+          <EditableCell
+            allUser={this.props.allUser.slice()}
+            value={text}
+            onChange={value => this.handleHeadDevChange(record.pointid, value)} />
+        )
       },
       { title: '埋点状态',
         dataIndex: 'status',
@@ -173,6 +256,11 @@ class PointTrackView extends Component {
         )
       }
     ]
+
+    const rowSelection = {
+      selectedRowKeys: this.props.selectedRowKeys.slice(),
+      onChange: this.handleSelectChange
+    }
 
     return (
       <div>
@@ -286,19 +374,37 @@ class PointTrackView extends Component {
           </Row>
         </Form>
         <Row className="point_track-table-operator">
-          <Col span={6}>
-            <Button type="primary" icon="plus" size="large" onClick={this.handlerNew}>新建</Button>
+          <Col span={24}>
+            <Button
+              type="primary"
+              icon="plus"
+              size="large"
+              onClick={this.handlerNew}>新建</Button>
+            <Button
+              style={{ marginLeft: 8 }}
+              type="primary"
+              icon="usergroup-add"
+              size="large"
+              disabled={!this.props.selectedRowKeys.slice().length > 0}
+              onClick={this.handlerShowSetPointHeadModel}>批量设置负责人</Button>
           </Col>
         </Row>
         <Table
           className="point_track-table"
           columns={columns}
-          rowKey={(record) => `${record.pointid}-${record.channel}-${record.device_id}`}
+          rowKey={(record) => `${record.pointid}`}
           loading={this.props.loading}
           dataSource={this.props.tableData.slice()}
-          pagination={{ current: this.props.pageIndex, pageSize: this.props.pageSize, total: this.props.totalCount }}
+          pagination={{
+            current: this.props.pageIndex,
+            defaultPageSize: 10,
+            total: this.props.totalCount,
+            showSizeChanger: true
+          }}
           onChange={this.hanlerTablePermeterChange}
+          rowSelection={rowSelection}
         />
+        {this.renderSetPointHeadModel()}
       </div>
     )
   }
@@ -312,6 +418,9 @@ export default inject(
     pageIndex: stores.trackList.pageIndex,
     totalCount: stores.trackList.totalCount,
     loading: stores.trackList.loading,
-    batchList: stores.trackList.batchList
+    batchList: stores.trackList.batchList,
+    allUser: stores.trackList.allUser,
+    selectedRowKeys: stores.trackList.selectedRowKeys,
+    selectUserId: stores.trackList.selectUserId
   })
 )(observer(Form.create()(PointTrackView)))
