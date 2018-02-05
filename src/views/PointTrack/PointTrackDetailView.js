@@ -415,8 +415,8 @@ class PointTrackDetailView extends Component {
       desc,
       version,
       hascommon,
-      business_line,
-      batch_id,
+      business_line, // eslint-disable-line
+      batch_id, // eslint-disable-line
       status
     } = this.props.formData
 
