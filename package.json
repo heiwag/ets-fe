@@ -15,7 +15,9 @@
     "dev": "node build/dev-server",
     "build": "node build/build.js",
     "lint": "eslint --ext .js,.jsx src test",
-    "test": "jest"
+    "test": "jest",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.5",
@@ -88,7 +90,8 @@
     "react-loadable": "^5.3.0",
     "react-router-config": "^1.0.0-beta.4",
     "react-router-dom": "^4.2.2",
-    "store2": "^2.5.9"
+    "store2": "^2.5.9",
+    "snyk": "^1.161.1"
   },
   "engines": {
     "node": ">= 4.0.0",
@@ -104,5 +107,6 @@
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/unit/__mocks__/fileMock.js",
       "\\.(css|less|scss|sass|stylus|styl)$": "<rootDir>/test/unit/__mocks__/styleMock.js"
     }
-  }
+  },
+  "snyk": true
 }
